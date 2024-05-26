@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->string('NIN');
+            $table->string('NIN')->unique();
             $table->string('provider');
             $table->string('provider_id');
             $table->timestamp('email_verified_at')->nullable();
