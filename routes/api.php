@@ -2,6 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RouteScheduleController;
+use App\Http\Controllers\VehicleCategoryController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VehicleRouteController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
