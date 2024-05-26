@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Translatable\HasTranslations;
 
 class VehicleCategory extends Model
 {
     use HasFactory;
-    // Install a translate package and add the translatable trait here
+    use HasTranslations;
 
     protected $guarded = ['id'];
     protected $translatable = ['name'];
