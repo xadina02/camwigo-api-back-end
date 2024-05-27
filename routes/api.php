@@ -9,7 +9,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleRouteController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +22,13 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('journey-routes', RouteController::class);
+    Route::resource('route-schedules', RouteScheduleController::class);
+    Route::get('route-schedules/for/{route_id}', [RouteScheduleController::class, 'getRouteSchedules']);
+    Route::resource('vehicle-categories', VehicleCategoryController::class);
+// });
