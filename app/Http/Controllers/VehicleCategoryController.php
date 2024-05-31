@@ -26,14 +26,12 @@ class VehicleCategoryController extends Controller
     {
         $validated = $request->validated();
 
-        logger("The request: " . $request);
-
         $current_timestamp = Carbon::now();
 
         $vehicleCategory = new VehicleCategory();
         $vehicleCategory->name = $validated['name'];
 
-        $imageLink = $this->handleImageUpload($request, 'vehiclecategory');
+        $imageLink = $this->handleImageUpload($request);
         $vehicleCategory->icon_link = $imageLink;
 
         $vehicleCategory->created_at = $current_timestamp;
@@ -56,26 +54,22 @@ class VehicleCategoryController extends Controller
 
     public function update(VehicleCategoryRequest $request, $id) 
     {
+        logger("DATA:", ["Raw Input" => $request->all(), "Request name" => [$request->input('name')], "Request image" => [$request->file('image')]]);
         $validated = $request->validated();
 
-        $current_timestamp = Carbon::now();
-        $validated['updated_at'] = $current_timestamp;
+        $validated['updated_at'] = Carbon::now();
 
         $vehicleCategory = VehicleCategory::find($id);
 
         if ($vehicleCategory) {
-            if($request->hasFile('image')) {
-                $filePath = 'images/vehiclecategory/' . $vehicleCategory->icon_link;
-                $defaultIcon = config('app.url') . '/storage/images/vehiclecategory/defaultIcon.png';
-                if (Storage::disk('public')->exists($filePath) && $vehicleCategory->icon_link != $defaultIcon) {
-                    Storage::disk('public')->delete($filePath);
-                }
-                $imageLink = $this->handleImageUpload($request, 'vehiclecategory');
-                $validated['icon_link'] = $imageLink;
+            logger("Category to update:", [$vehicleCategory->name]);
+            if ($request->hasFile('image')) {
+                logger("File present in request?", [true]);
+                $this->handleImageDelete($vehicleCategory->icon_link);
+                $validated['icon_link'] = $this->handleImageUpload($request);
             }
 
             $vehicleCategory->update($validated);
-
             return response()->json(['message' => 'Vehicle category updated successfully'], 200);
         }
 
@@ -87,11 +81,7 @@ class VehicleCategoryController extends Controller
         $vehicleCategory = VehicleCategory::find($id);
 
         if ($vehicleCategory) {
-            $filePath = 'images/vehiclecategory/' . $vehicleCategory->icon_link;
-            $defaultIcon = config('app.url') . '/storage/images/vehiclecategory/defaultIcon.png';
-            if (Storage::disk('public')->exists($filePath) && $vehicleCategory->icon_link != $defaultIcon) {
-                Storage::disk('public')->delete($filePath);
-            }
+            $this->handleImageDelete($vehicleCategory->icon_link);
             $vehicleCategory->delete();
 
             return response()->json(['message' => 'Vehicle category deleted successfully'], 200);
@@ -100,15 +90,16 @@ class VehicleCategoryController extends Controller
         return response()->json(['message' => 'Vehicle category not found'], 404);
     }
 
-    private function handleImageUpload(VehicleCategoryRequest $request, $folder)
+    public function handleImageUpload(VehicleCategoryRequest $request)
     {
-        $imageLink = config('app.url') . '/storage/images/' . $folder . '/defaultIcon.png';
+        $folder = 'vehicle-category';
+        $imageLink = '/images/defaultIcon.svg';
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . $request->name . '.' . $image->getClientOriginalExtension();
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
 
-            $storagePath = 'public/images' . $folder . '/';
+            $storagePath = 'public/images/' . $folder . '/';
 
             if (!Storage::exists($storagePath)) {
                 Storage::makeDirectory($storagePath);
@@ -116,9 +107,17 @@ class VehicleCategoryController extends Controller
 
             $image->storeAs($storagePath, $imageName);
 
-            $imageLink = config('app.url') . '/storage/images/' . $folder . '/' . $imageName;
+            $imageLink = '/images/' . $folder . '/' . $imageName;
         }
 
         return $imageLink;
+    }
+
+    public function handleImageDelete($imagePath) 
+    {
+        $defaultIcon = '/images/defaultIcon.svg';
+        if (Storage::disk('public')->exists($imagePath) && strcmp($imagePath, $defaultIcon) != 0) {
+            Storage::disk('public')->delete($imagePath);
+        }
     }
 }
