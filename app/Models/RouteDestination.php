@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
-class RouteSchedule extends Model
+class RouteDestination extends Model
 {
     use HasFactory;
     use HasTranslations;
 
     protected $guarded = ['id'];
-    protected $translatable = ['label'];
+    protected $translatable = ['destination'];
 
     public function route(): BelongsTo
     {

@@ -31,4 +31,5 @@ use App\Http\Controllers\AuthenticationController;
     Route::resource('route-schedules', RouteScheduleController::class);
     Route::get('route-schedules/for/{route_id}', [RouteScheduleController::class, 'getRouteSchedules']);
     Route::resource('vehicle-categories', VehicleCategoryController::class);
+    Route::resource('vehicles', VehicleController::class);
 // });

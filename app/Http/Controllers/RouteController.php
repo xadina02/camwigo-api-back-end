@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Route;
+use App\Models\RouteDestination;
 use App\Http\Requests\RouteRequest;
 use App\Http\Requests\UpdateRouteRequest;
 use App\Http\Resources\RouteResource;
@@ -13,6 +14,7 @@ class RouteController extends Controller
 {
     public function index(Request $request)
     {
+        // $relationships = ['routeSchedules'];
         $allRoutes = Route::all();
 
         if(!$allRoutes->isEmpty()) {
@@ -30,17 +32,29 @@ class RouteController extends Controller
 
         $journeyRoute = new Route();
         $journeyRoute->origin = $validated['origin'];
-        $journeyRoute->destination = $validated['destination'];
         $journeyRoute->created_at = $current_timestamp;
         $journeyRoute->updated_at = $current_timestamp;
-        $journeyRoute->save();
 
-        return response()->json(['message' => 'Journey route created successfully'], 200);
+        if($journeyRoute->save()) 
+        {
+            $destinations = $validated['destination'];
+
+            foreach ($destinations as $destination) 
+            {
+                $journeyRouteDestinations = new RouteDestination();
+                $journeyRouteDestinations->route_id = $journeyRoute->id;
+                $journeyRouteDestinations->destination = $destination;
+                $journeyRouteDestinations->save();
+            }
+
+            return response()->json(['message' => 'Journey route created successfully'], 200);
+        }
     }
 
     public function show($id)
     {
-        $journeyRoute = Route::find($id);
+        $relationships = ['vehicles.vehicleCategory', 'routeSchedules', 'routeDestinations'];
+        $journeyRoute = Route::find($id)->with($relationships);
 
         if ($journeyRoute) {
             return new RouteResource($journeyRoute);

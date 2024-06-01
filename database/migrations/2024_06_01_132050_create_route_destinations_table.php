@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehicle_categories', function (Blueprint $table) {
+        Schema::create('route_destinations', function (Blueprint $table) {
             $table->id();
-            $table->json('name');
-            $table->integer('size');
-            $table->string('icon_link');
+            $table->foreignId('route_id')->constrained()->cascadeOnUpdate()->nullable();
+            $table->json('destination');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicle_categories');
+        Schema::dropIfExists('route_destinations');
     }
 };

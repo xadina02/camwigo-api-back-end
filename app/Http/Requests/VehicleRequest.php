@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRouteRequest extends FormRequest
+class VehicleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,9 @@ class UpdateRouteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'origin' => ['nullable', 'string']
+            'route_id' => ['required', 'integer'],
+            'vehicle_category_id' => ['required', 'integer'],
+            'price' => ['required', 'double'],
         ];
     }
 }

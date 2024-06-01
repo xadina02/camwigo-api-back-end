@@ -8,6 +8,7 @@ use App\Models\VehicleCategory;
 use App\Http\Requests\VehicleCategoryRequest;
 use App\Http\Resources\VehicleCategoryResource;
 use Carbon\Carbon;
+use App\Helpers\ImageHelper;
 
 class VehicleCategoryController extends Controller
 {
@@ -30,6 +31,7 @@ class VehicleCategoryController extends Controller
 
         $vehicleCategory = new VehicleCategory();
         $vehicleCategory->name = $validated['name'];
+        $vehicleCategory->size = $validated['size'];
 
         $imageLink = $this->handleImageUpload($request);
         $vehicleCategory->icon_link = $imageLink;
@@ -54,7 +56,7 @@ class VehicleCategoryController extends Controller
 
     public function update(VehicleCategoryRequest $request, $id) 
     {
-        logger("DATA:", ["Raw Input" => $request->all(), "Request name" => [$request->input('name')], "Request image" => [$request->file('image')]]);
+        logger("DATA:", ["Raw Input" => $request->all(), "Request name" => [$request->input('name')], "Request size" => [$request->input('size')], "Request image" => [$request->file('image')]]);
         $validated = $request->validated();
 
         $validated['updated_at'] = Carbon::now();
@@ -81,7 +83,8 @@ class VehicleCategoryController extends Controller
         $vehicleCategory = VehicleCategory::find($id);
 
         if ($vehicleCategory) {
-            $this->handleImageDelete($vehicleCategory->icon_link);
+            ImageHelper::handleImageDelete($vehicleCategory->icon_link);
+            // $this->handleImageDelete($vehicleCategory->icon_link);
             $vehicleCategory->delete();
 
             return response()->json(['message' => 'Vehicle category deleted successfully'], 200);
@@ -111,13 +114,5 @@ class VehicleCategoryController extends Controller
         }
 
         return $imageLink;
-    }
-
-    public function handleImageDelete($imagePath) 
-    {
-        $defaultIcon = '/images/defaultIcon.svg';
-        if (Storage::disk('public')->exists($imagePath) && strcmp($imagePath, $defaultIcon) != 0) {
-            Storage::disk('public')->delete($imagePath);
-        }
     }
 }

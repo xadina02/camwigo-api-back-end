@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('route_id')->constrained()->cascadeOnUpdate()->nullable();
-            $table->integer('size');
+            $table->foreignId('vehicle_category_id')->constrained()->cascadeOnUpdate();
             $table->integer('available_seats');
             $table->integer('reserved_seats');
             $table->double('price');

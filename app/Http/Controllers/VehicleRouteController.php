@@ -5,31 +5,31 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\Route;
+use App\Http\Requests\VehicleRouteRequest;
+use Carbon\Carbon;
 
 class VehicleRouteController extends Controller
 {
-    public function index() 
+    public function attributeRouteToVehicle(VehicleRouteRequest $request, $id) 
     {
-        //
-    }
+        $validated = $request->validated();
 
-    public function store() 
-    {
-        //
-    }
+        $current_timestamp = Carbon::now();
 
-    public function show() 
-    {
-        //
-    }
+        $route = Route::find($validated['route_id']);
+        $vehicle = Vehicle::find($id);
 
-    public function update() 
-    {
-        //
-    }
+        if($route) {
+            if($vehicle) {
+                $validated['updated_at'] = $current_timestamp;
+                $vehicle->update($validated);
 
-    public function destroy() 
-    {
-        //
+                return response()->json(['message' => 'Vehicle route set successfully'], 200);
+            }
+
+            return response()->json(['message' => 'Vehicle not found'], 404);
+        }
+
+        return response()->json(['message' => 'Journey route not found'], 404);
     }
 }

@@ -23,6 +23,7 @@ class VehicleCategoryRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string'],
+            'size' => ['nullable', 'integer'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg']
         ];
     }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
             $table->json('origin');
-            $table->json('destination');
             $table->timestamps();
         });
     }

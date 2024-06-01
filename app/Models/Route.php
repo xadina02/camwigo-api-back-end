@@ -13,7 +13,7 @@ class Route extends Model
     use HasTranslations;
 
     protected $guarded = ['id'];
-    protected $translatable = ['origin', 'destination'];
+    protected $translatable = ['origin'];
 
     public function vehicles(): HasMany
     {
@@ -23,5 +23,10 @@ class Route extends Model
     public function routeSchedules(): HasMany
     {
         return $this->hasMany(RouteSchedule::class);
+    }
+
+    public function routeDestinations(): HasMany
+    {
+        return $this->hasMany(RouteDestination::class);
     }
 }

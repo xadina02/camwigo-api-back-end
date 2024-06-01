@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('position');
-            $table->enum('status', ['valid', 'blocked', 'pending', 'cancelled'])->default('pending');
+            $table->enum('status', ['valid', 'blocked', 'pending'])->default('pending');
             $table->timestamps();
         });
     }
