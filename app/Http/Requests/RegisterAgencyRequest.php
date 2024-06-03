@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TicketRequest extends FormRequest
+class RegisterAgencyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,10 @@ class TicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Has to include payment details too
-            'route_schedule_id' => ['required', 'integer'],
-            'route_destination_id' => ['required', 'integer'],
+            'agency' => ['nullable', 'string'],
+            'address' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg'],
         ];
     }
 }

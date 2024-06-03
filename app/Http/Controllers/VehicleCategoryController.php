@@ -67,7 +67,7 @@ class VehicleCategoryController extends Controller
             logger("Category to update:", [$vehicleCategory->name]);
             if ($request->hasFile('image')) {
                 logger("File present in request?", [true]);
-                $this->handleImageDelete($vehicleCategory->icon_link);
+                ImageHelper::handleImageDelete($vehicleCategory->icon_link);
                 $validated['icon_link'] = $this->handleImageUpload($request);
             }
 

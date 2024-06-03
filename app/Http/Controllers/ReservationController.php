@@ -45,6 +45,8 @@ class ReservationController extends Controller
                 $reservation->updated_at = $current_timestamp;
                 $reservation->save();
 
+                // If flow-specific, send a TicketRequest from here to the handlePayment() method in PaymentController for subsequent payment handling and ticket generation
+
                 return response()->json(['message' => 'Reservation created successfully'], 200);
             }
 
