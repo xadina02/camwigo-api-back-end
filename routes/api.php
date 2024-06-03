@@ -43,4 +43,10 @@ use App\Http\Controllers\AuthenticationController;
     Route::post('make-payment/{reservation}', [PaymentController::class, 'handlePayment'])->name('payment.post');
     Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']);
     Route::post('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
+    
+    Route::resource('users', AuthenticationController::class);
 // });
+
+
+Route::post('login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('register', [AuthenticationController::class, 'register'])->name('register-user');

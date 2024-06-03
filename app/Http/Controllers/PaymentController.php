@@ -101,8 +101,17 @@ class PaymentController extends Controller
         $agencyLogo = Setting::where('label', 'logo')->value('value');
         $centerImagePath = base_path('/storage/app/public'.$agencyLogo);
 
+        // Encode ticket data
+        $encodedTicketData = base64_encode($ticket);
+
         // Generate the QR code
-        $qrCode = QrCode::encoding('UTF-8')->margin(1)->style('round', 0.99)->format('png')->size(400)->merge($centerImagePath, .4, true)->generate($ticket);
+        $qrCode = QrCode::encoding('UTF-8')
+            ->margin(1)
+            ->style('round', 0.99)
+            ->format('png')
+            ->size(400)
+            ->merge($centerImagePath, .4, true)
+            ->generate($encodedTicketData);
         
         // Define the data and file path
         $imageName = 'ticket-qr-codes' . '/' . time() . '_' . uniqid() . $ticket->id . $ticket->reservation_id . $ticket->route_schedule_id . $ticket->route_destination . '_qr_code.png';
