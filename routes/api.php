@@ -25,28 +25,27 @@ use App\Http\Controllers\AuthenticationController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::prefix('{version}/{lang}')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::resource('journey-routes', RouteController::class);
+        Route::resource('route-schedules', RouteScheduleController::class);
+        Route::get('route-schedules/for/{route_id}', [RouteScheduleController::class, 'getRouteSchedules']);
+        Route::resource('route-destinations', RouteDestinationController::class);
+        Route::resource('vehicle-categories', VehicleCategoryController::class);
+        Route::resource('vehicles', VehicleController::class);
+        Route::get('vehicles/for/{route_id}', [VehicleController::class, 'getRouteVehicles']);
+        Route::post('vehicles-routes/{vehicle}', [VehicleRouteController::class, 'attributeRouteToVehicle']);
+        Route::resource('reservations', ReservationController::class);
+        Route::resource('tickets', TicketController::class);
+        Route::post('make-payment/{reservation}', [PaymentController::class, 'handlePayment'])->name('payment.post');
+        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']);
+        Route::post('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
+    });
 
-// Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('journey-routes', RouteController::class);
-    Route::resource('route-schedules', RouteScheduleController::class);
-    Route::get('route-schedules/for/{route_id}', [RouteScheduleController::class, 'getRouteSchedules']);
-    Route::resource('route-destinations', RouteDestinationController::class);
-    Route::resource('vehicle-categories', VehicleCategoryController::class);
-    Route::resource('vehicles', VehicleController::class);
-    Route::get('vehicles/for/{route_id}', [VehicleController::class, 'getRouteVehicles']);
-    Route::post('vehicles-routes/{vehicle}', [VehicleRouteController::class, 'attributeRouteToVehicle']);
-    Route::resource('reservations', ReservationController::class);
-    Route::resource('tickets', TicketController::class);
-    Route::post('make-payment/{reservation}', [PaymentController::class, 'handlePayment'])->name('payment.post');
-    Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']);
-    Route::post('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
-    
-    Route::resource('users', AuthenticationController::class);
-// });
-
-
-Route::post('login', [AuthenticationController::class, 'login'])->name('login');
-Route::post('register', [AuthenticationController::class, 'register'])->name('register-user');
+    Route::controller(AuthenticationController::class)->prefix('auth')->group(function () {
+        Route::post('/register', 'register');
+        Route::put('/update/profile', 'update')->middleware('auth:sanctum');
+        Route::get('/logout', 'logout')->middleware('auth:sanctum');
+        Route::post('/account/delete', 'destroy')->middleware('auth:sanctum');
+    });
+});
