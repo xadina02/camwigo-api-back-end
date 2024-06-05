@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('vehicle_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('vehicle_route_destination_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('position');
-            $table->enum('status', ['valid', 'blocked', 'pending'])->default('pending');
+            $table->double('amount_paid')->default(0.00);
+            $table->enum('status', ['completed', 'blocked', 'pending', 'paid', 'partial'])->default('pending');
             $table->timestamps();
         });
     }

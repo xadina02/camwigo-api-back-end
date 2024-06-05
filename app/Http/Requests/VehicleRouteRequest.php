@@ -22,7 +22,9 @@ class VehicleRouteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'route_id' => ['required', 'integer']
+            'route_schedule_id' => ['required', 'integer'],
+            'price' => ['required', 'double'],
+            'dates,*' => ['required', 'date_format:Y-m-d H:i:s']
         ];
     }
 }

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\Reservation;
-use App\Models\RouteSchedule;
-use App\Models\RouteDestination;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\TicketRequest;
@@ -25,9 +23,15 @@ class PaymentController extends Controller
     /**
      * Handle Payment
      */
-    public function handlePayment(TicketRequest $request, $id)
+    public function handlePayment(TicketRequest $request, $reservation_id)
     {
         $validated = $request->validated();
+
+        $reservation = Reservation::find($reservation_id);
+
+        // For testing - To Be Removed!
+        $amount = $validated['amount'];
+        // $amount = $reservation->vehicleRouteDestination->price;
 
         /*
         Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -40,49 +44,46 @@ class PaymentController extends Controller
         ]);
         */
 
-        // Generate and return ticket details
-        $ticket = $this->generateTicket($validated, $id);
-        
-        // Generate, save and return the link to the QR-Code using the ticket details gotten above
-        if($ticket != null) {
-            $qr_code_link = $this->generateQrCode($ticket);
+        $reservation->amount_paid += $amount;
+        $reservation->save();
+
+        // After successful payment, set $reservation->status = "paid" if `amount` == $reservation->vehicleRouteDestination->price | To show the reservation has been paid for but not yet completed (status = "complete" - where ticket and qr code have been generated and saved)
+        // After successful payment, set $reservation->status = "partial" if `amount` < $reservation->vehicleRouteDestination->price | To show the reservation has been paid for but not yet completed (status = "complete" - where ticket and qr code have been generated and saved)
+
+        if($reservation->amount_paid == $reservation->vehicleRouteDestination->price) 
+        {
+            $ticket = $this->generateTicket($reservation_id);
+            
+            if($ticket != null) {
+                $qr_code_link = $this->generateQrCode($ticket);
+
+                $ticket->QR_code_image_link = $qr_code_link;
+                $ticket->save();
+
+                $reservation->status = "completed";
+                $reservation->save();
+
+                return response()->json(['message' => 'Payment successful! Reservation created!'], 200);
+            }
         }
-
-        // Update the ticket with the QR-Code and save
-        $ticket->QR_code_image_link = $qr_code_link;
-        $ticket->save();
-
-        return response()->json(['message' => 'Payment successful! Reservation created!'], 200);
     }
 
-    public function generateTicket($data, $id): Ticket
+    public function generateTicket($id): Ticket
     {
         $reservation = Reservation::find($id);
-        $routeSchedule = RouteSchedule::find($data['route_schedule_id']);
-        $routeDestination = RouteDestination::find($data['route_destination_id']);
 
         $current_timestamp = Carbon::now();
-        $validity_timestamp = Carbon::now()->format('Y-m-d') . ' ' . Carbon::parse($routeSchedule->departure_time)->addMinutes(15)->format('H:i:s');
+        $validity_timestamp = Carbon::now()->format('Y-m-d') . ' ' . Carbon::parse($reservation->vehicleRouteDestination->routeSchedule->departure_time)->addMinutes(15)->format('H:i:s');
 
-        if($routeDestination) {
-            if($routeSchedule) {
-                if($reservation) {
-                    $ticket = new Ticket();
-                    $ticket->reservation_id = $id;
-                    $ticket->route_schedule_id = $data['route_schedule_id'];
-                    $ticket->route_destination_id = $data['route_destination_id'];
-                    $ticket->status = "new";
-                    $ticket->validity = $validity_timestamp;
-                    $ticket->created_at = $current_timestamp;
-                    $ticket->updated_at = $current_timestamp;
+        if($reservation) {
+            $ticket = new Ticket();
+            $ticket->reservation_id = $id;
+            $ticket->status = "new";
+            $ticket->validity = $validity_timestamp;
+            $ticket->created_at = $current_timestamp;
+            $ticket->updated_at = $current_timestamp;
 
-                    return $ticket;
-                }
-
-                return null;
-            }
-
-            return null;
+            return $ticket;
         }
 
         return null;
@@ -97,14 +98,11 @@ class PaymentController extends Controller
     {
         $centerImagePath = base_path('/storage/app/public/images/CamWiGo_logo.png');
 
-        // Get agencyLogo to embed
         $agencyLogo = Setting::where('label', 'logo')->value('value');
         $centerImagePath = base_path('/storage/app/public'.$agencyLogo);
 
-        // Encode ticket data
         $encodedTicketData = base64_encode($ticket);
 
-        // Generate the QR code
         $qrCode = QrCode::encoding('UTF-8')
             ->margin(1)
             ->style('round', 0.99)
@@ -113,15 +111,13 @@ class PaymentController extends Controller
             ->merge($centerImagePath, .4, true)
             ->generate($encodedTicketData);
         
-        // Define the data and file path
-        $imageName = 'ticket-qr-codes' . '/' . time() . '_' . uniqid() . $ticket->id . $ticket->reservation_id . $ticket->route_schedule_id . $ticket->route_destination . '_qr_code.png';
+        $imageName = 'ticket-qr-codes' . '/' . time() . '_' . uniqid() . $ticket->id . '_' . $ticket->created_at . '-' . $ticket->validity . $ticket->reservation_id . '_qr_code.png';
         $filePath = 'public/images/' . $imageName;
 
-        // Use Storage facade to save the QR code
-        // Storage::put($filePath, (string) $qrCodeImage->encode('png'));
         Storage::put($filePath, $qrCode);
 
         $imageLink = '/images/' . $imageName;
+
         return $imageLink;
     }
 }

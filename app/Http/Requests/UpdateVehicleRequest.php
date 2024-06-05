@@ -22,7 +22,7 @@ class UpdateVehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'price' => ['nullable', 'double'],
+            'name' => ['required', 'string']
         ];
     }
 }

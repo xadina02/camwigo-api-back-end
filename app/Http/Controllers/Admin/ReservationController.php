@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use App\Models\VehicleRouteDestination;
 use App\Http\Requests\ReservationRequest;
 use App\Http\Resources\ReservationResource;
@@ -14,6 +15,18 @@ use App\Http\Requests\UpdateReservationRequest;
 
 class ReservationController extends Controller
 {
+    public function index(Request $request) 
+    {
+        $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        $allReservations = Reservation::all()->with($relationships);
+
+        if(!$allReservations->isEmpty()) {
+            return ReservationResource::collection($allReservations);
+        }
+
+        return response()->json(['message' => 'There are no available reservations'], 404);
+    }
+
     public function store(ReservationRequest $request) 
     {
         $validated = $request->validated();
@@ -60,6 +73,36 @@ class ReservationController extends Controller
         }
 
         return response()->json(['message' => 'The user does not exist'], 404);
+    }
+
+    public function show($id) 
+    {
+        $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route', 'ticket'];
+        $reservation = Reservation::find($id)->with($relationships);
+
+        if(!$reservation->isEmpty()) {
+            return new ReservationResource($reservation);
+        }
+
+        return response()->json(['message' => 'Vehicle not found'], 404);
+    }
+
+    public function update(UpdateReservationRequest $request, $id) 
+    {
+        $validated = $request->validated();
+
+        $current_timestamp = Carbon::now();
+        $validated['updated_at'] = $current_timestamp;
+
+        $reservation = Reservation::find($id);
+
+        if ($reservation) {
+            $reservation->update($validated);
+
+            return response()->json(['message' => 'Reservation details updated successfully'], 200);
+        }
+
+        return response()->json(['message' => 'Reservation not found'], 404);
     }
 
     public function destroy($id) 

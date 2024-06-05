@@ -16,14 +16,4 @@ class Ticket extends Model
     {
         return $this->belongsTo(Reservation::class);
     }
-
-    public function routeDestination(): BelongsTo
-    {
-        return $this->belongsTo(RouteDestination::class);
-    }
-
-    public function routeSchedule(): BelongsTo
-    {
-        return $this->belongsTo(RouteSchedule::class);
-    }
 }

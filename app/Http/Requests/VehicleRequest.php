@@ -22,9 +22,8 @@ class VehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'route_id' => ['required', 'integer'],
             'vehicle_category_id' => ['required', 'integer'],
-            'price' => ['required', 'double'],
+            'name' => ['required', 'string']
         ];
     }
 }

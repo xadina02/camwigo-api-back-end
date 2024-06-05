@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\models\Ticket;
 use App\Http\Resources\TicketResource;
@@ -10,14 +11,21 @@ use App\Helpers\ImageHelper;
 
 class TicketController extends Controller
 {
-    public function getMyTickets() 
+    public function index(Request $request) 
     {
-        //
+        $relationships = ['reservation.user', 'reservation.vehicleRouteDestination.vehicle', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        $allTickets = Ticket::all()->with($relationships);
+
+        if(!$allTickets->isEmpty()) {
+            return TicketResource::collection($allTickets);
+        }
+
+        return response()->json(['message' => 'There are no available tickets'], 404);
     }
 
     public function show($id) 
     {
-        $relationships = ['reservation.user', 'reservation.vehicle.vehicleCategory', 'routeSchedule', 'routeDestination.route'];
+        $relationships = ['reservation.user', 'reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
         $ticket = Ticket::find($id)->with($relationships);
 
         if(!$ticket->isEmpty()) {

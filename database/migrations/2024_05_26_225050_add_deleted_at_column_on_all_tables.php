@@ -18,7 +18,9 @@ return new class extends Migration
             'vehicles',
             'reservations',
             'tickets',
-            'vehicle_categories'
+            'vehicle_categories',
+            'route_destinations',
+            'vehicle_route_destinations'
         ];
 
         foreach($allTables as $aTable) 

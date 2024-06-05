@@ -23,8 +23,8 @@ class Reservation extends Model
         return $this->hasOne(Ticket::class);
     }
 
-    public function vehicle(): BelongsTo
+    public function vehicleRouteDestination(): BelongsTo
     {
-        return $this->belongsTo(Vehicle::class);
+        return $this->belongsTo(VehicleRouteDestination::class);
     }
 }
