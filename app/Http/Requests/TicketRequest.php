@@ -23,7 +23,7 @@ class TicketRequest extends FormRequest
     {
         return [
             // To be removed
-            'amount' => ['required', 'double']
+            'amount' => ['required', 'numeric']
             
             // PAYMENT DETAILS
         ];

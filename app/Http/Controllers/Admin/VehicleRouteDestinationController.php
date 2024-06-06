@@ -44,4 +44,17 @@ class VehicleRouteDestinationController extends Controller
 
         return response()->json(['message' => 'Journey route not found'], 404);
     }
+
+    public function removeRouteFromVehicle($id) 
+    {
+        $vehicleRouteDest = VehicleRouteDestination::find($id);
+
+        if ($vehicleRouteDest) {
+            $vehicleRouteDest->delete();
+
+            return response()->json(['message' => 'Vehicle journey deleted successfully'], 200);
+        }
+        
+        return response()->json(['message' => 'Vehicle journey not found'], 404);
+    }
 }

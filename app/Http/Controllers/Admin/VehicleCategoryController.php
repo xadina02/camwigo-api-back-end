@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\VehicleCategory;
 use App\Http\Requests\VehicleCategoryRequest;
-use App\Http\Resources\VehicleCategoryResource;
 use Carbon\Carbon;
 use App\Helpers\ImageHelper;
 
@@ -17,11 +16,7 @@ class VehicleCategoryController extends Controller
     {
         $allVehicleCategories = VehicleCategory::all();
 
-        if(!$allVehicleCategories->isEmpty()) {
-            return VehicleCategoryResource::collection($allVehicleCategories);
-        }
-
-        return response()->json(['message' => 'There are no available vehicle categories'], 404);
+        return response()->json(['vehicle categories' => $allVehicleCategories], 200);
     }
 
     public function store(VehicleCategoryRequest $request) 
@@ -48,11 +43,7 @@ class VehicleCategoryController extends Controller
     {
         $vehicleCategory = VehicleCategory::find($id);
 
-        if ($vehicleCategory) {
-            return new VehicleCategoryResource($vehicleCategory);
-        }
-
-        return response()->json(['message' => 'Vehicle category not found'], 404);
+        return response()->json(['vehicle category' => $vehicleCategory], 200);
     }
 
     public function update(VehicleCategoryRequest $request, $id) 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\models\Ticket;
+use App\Models\Ticket;
 use App\Http\Resources\TicketResource;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\ImageHelper;
@@ -14,25 +14,17 @@ class TicketController extends Controller
     public function index(Request $request) 
     {
         $relationships = ['reservation.user', 'reservation.vehicleRouteDestination.vehicle', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
-        $allTickets = Ticket::all()->with($relationships);
+        $allTickets = Ticket::with($relationships)->get();
 
-        if(!$allTickets->isEmpty()) {
-            return TicketResource::collection($allTickets);
-        }
-
-        return response()->json(['message' => 'There are no available tickets'], 404);
+        return response()->json(['tickets' => $allTickets], 200);
     }
 
     public function show($id) 
     {
         $relationships = ['reservation.user', 'reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
-        $ticket = Ticket::find($id)->with($relationships);
+        $ticket = Ticket::with($relationships)->find($id);
 
-        if(!$ticket->isEmpty()) {
-            return new TicketResource($ticket);
-        }
-
-        return response()->json(['message' => 'Vehicle not found'], 404);
+        return response()->json(['ticket' => $ticket], 200);
     }
 
     public function destroy($id) 

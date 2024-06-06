@@ -23,7 +23,7 @@ use App\Http\Controllers\AuthenticationController;
 |
 */
 
-Route::prefix('{version}/{lang}')->group(function () {
+Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(function () {
     Route::prefix('users')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('route-schedules', [RouteScheduleController::class, 'getRouteSchedules']);
@@ -37,10 +37,11 @@ Route::prefix('{version}/{lang}')->group(function () {
             Route::resource('tickets', TicketController::class);
             Route::get('tickets/all', [TicketController::class, 'getMyTickets']);
             Route::post('make-payment/{reservation}', [PaymentController::class, 'handlePayment'])->name('payment.post');
+            Route::get('make-payment', [PaymentController::class, 'handleGet']);
         });
 
         Route::controller(AuthenticationController::class)->prefix('auth')->group(function () {
-            Route::post('/register', 'register');
+            Route::post('/register', 'register')->name('login');
             Route::put('/update/profile', 'update')->middleware('auth:sanctum');
             Route::get('/logout', 'logout')->middleware('auth:sanctum');
             Route::post('/account/delete', 'destroy')->middleware('auth:sanctum');

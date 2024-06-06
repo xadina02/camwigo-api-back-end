@@ -18,7 +18,7 @@ class RouteSchedule extends Model
 
     public function routeDestination(): BelongsTo
     {
-        return $this->belongsTo(Route::class);
+        return $this->belongsTo(RouteDestination::class);
     }
 
     public function vehicleRouteDestinations(): HasMany

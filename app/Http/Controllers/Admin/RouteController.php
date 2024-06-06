@@ -16,13 +16,9 @@ class RouteController extends Controller
     public function index(Request $request)
     {
         $relationships = ['routeDestinations'];
-        $allRoutes = Route::all()->with($relationships);
+        $allRoutes = Route::with($relationships)->get();
 
-        if(!$allRoutes->isEmpty()) {
-            return RouteResource::collection($allRoutes);
-        }
-
-        return response()->json(['message' => 'There are no available journey routes'], 404);
+        return response()->json(['routes' => $allRoutes], 200);
     }
 
     public function store(RouteRequest $request)
@@ -38,7 +34,7 @@ class RouteController extends Controller
 
         if($journeyRoute->save()) 
         {
-            $destinations = $validated['destination'];
+            $destinations = $validated['destinations'];
 
             foreach ($destinations as $destination) 
             {
@@ -55,13 +51,9 @@ class RouteController extends Controller
     public function show($id)
     {
         $relationships = ['routeDestinations.routeSchedules.vehicleRouteDestinations.vehicle.vehicleCategory'];
-        $journeyRoute = Route::find($id)->with($relationships);
+        $journeyRoute = Route::with($relationships)->find($id);
 
-        if ($journeyRoute) {
-            return new RouteResource($journeyRoute);
-        }
-
-        return response()->json(['message' => 'Journey route not found'], 404);
+        return response()->json(['route' => $journeyRoute], 200);
     }
 
     public function update(UpdateRouteRequest $request, $id)

@@ -18,13 +18,9 @@ class ReservationController extends Controller
     public function index(Request $request) 
     {
         $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route'];
-        $allReservations = Reservation::all()->with($relationships);
+        $allReservations = Reservation::with($relationships)->get();
 
-        if(!$allReservations->isEmpty()) {
-            return ReservationResource::collection($allReservations);
-        }
-
-        return response()->json(['message' => 'There are no available reservations'], 404);
+        return response()->json(['reservations' => $allReservations], 200);
     }
 
     public function store(ReservationRequest $request) 
@@ -69,7 +65,7 @@ class ReservationController extends Controller
                 return response()->json(['message' => 'No available seats or all seats are reserved'], 400);
             }
 
-            return response()->json(['message' => 'The vehicle does not exist'], 404);
+            return response()->json(['message' => 'The vehicle journey not exist'], 404);
         }
 
         return response()->json(['message' => 'The user does not exist'], 404);
@@ -78,13 +74,9 @@ class ReservationController extends Controller
     public function show($id) 
     {
         $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route', 'ticket'];
-        $reservation = Reservation::find($id)->with($relationships);
+        $reservation = Reservation::with($relationships)->find($id);
 
-        if(!$reservation->isEmpty()) {
-            return new ReservationResource($reservation);
-        }
-
-        return response()->json(['message' => 'Vehicle not found'], 404);
+        return response()->json(['reservation' => $reservation], 200);
     }
 
     public function update(UpdateReservationRequest $request, $id) 

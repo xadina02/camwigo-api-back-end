@@ -17,13 +17,9 @@ class VehicleController extends Controller
     public function index(Request $request) 
     {
         $relationships = ['vehicleCategory'];
-        $allVehicles = Vehicle::all()->with($relationships);
+        $allVehicles = Vehicle::with($relationships)->get();
 
-        if(!$allVehicles->isEmpty()) {
-            return VehicleResource::collection($allVehicles);
-        }
-
-        return response()->json(['message' => 'There are no available vehicles'], 404);
+        return response()->json(['vehicles' => $allVehicles], 200);
     }
 
     public function store(VehicleRequest $request) 
@@ -51,13 +47,9 @@ class VehicleController extends Controller
     public function show($id) 
     {
         $relationships = ['vehicleRouteDestinations.routeSchedule.routeDestination.route' ,'vehicleCategory'];
-        $vehicle = Vehicle::find($id)->with($relationships);
+        $vehicle = Vehicle::with($relationships)->find($id);
 
-        if(!$vehicle->isEmpty()) {
-            return new VehicleResource($vehicle);
-        }
-
-        return response()->json(['message' => 'Vehicle not found'], 404);
+        return response()->json(['vehicle' => $vehicle], 200);
     }
 
     public function update(UpdateVehicleRequest $request, $id) 

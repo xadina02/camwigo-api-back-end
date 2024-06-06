@@ -4,17 +4,32 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use App\Models\User;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserResource;
 use Carbon\Carbon;
 
-class AuthenticationController extends Controller
+class UserController extends Controller
 {
+    public function index(Request $request) 
+    {
+        $users = User::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'admin');
+        })->get();
+        
+        // return data with a view
+        return response()->json(['users' => $users], 200);
+    }
+
+    public function show($id) 
+    {
+        $user = User::find($id);
+
+        // return data with a view
+        return response()->json(['user' => $user], 200);
+    }
+
     /**
      * Registering new passenger-users
      */
@@ -62,9 +77,8 @@ class AuthenticationController extends Controller
             
             $user->assignRole($role);
             $user->save();
-
-            $token = $user->createToken($user->NIN . 'AuthToken')->plainTextToken;
-            return new UserResource($user, $token, 'Bearer');
+            
+            return response()->json(['message' => 'User registered successfully'], 200);
         }
 
         if(!$user->hasRole($role))
@@ -72,20 +86,18 @@ class AuthenticationController extends Controller
             $user->assignRole($role);
         }
 
-        $token = $user->createToken($user->NIN . 'AuthToken')->plainTextToken;
-        return new UserResource($user, $token, 'Bearer');
+        return response()->json(['message' => 'The user already exists'], 401);
     }
 
     /**
      * Updating passenger user-details
      */
-    public function update(UpdateUserRequest $request)
+    public function update(UpdateUserRequest $request, $id)
     {
         $validated = $request->validated();
 
         $current_timestamp = Carbon::now();
         $validated['updated_at'] = $current_timestamp;
-        $id = auth('sanctum')->user()->id;
 
         $user = User::find($id);
 
@@ -99,25 +111,9 @@ class AuthenticationController extends Controller
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    public function logout(Request $request)
+    public function destroy($id) 
     {
-        if ($request->user()) {
-            $token = $request->user()->currentAccessToken();
-            
-            if ($token) {
-                $token->delete();
-                auth('web')->logout();
-            } else {
-                return response()->json(["message" => "Token not found"], 404);
-            }
-        }
-
-        return response()->json(["message" => "logged out successfully"], 200);
-    }
-
-    public function destroy(Request $request) 
-    {
-        $user = Auth::user();
+        $user = User::find($id);
 
         if($user) 
         {

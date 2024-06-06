@@ -2,40 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Route;
 use Illuminate\Http\Request;
 use App\Models\RouteSchedule;
-use App\Models\Route;
+use App\Models\RouteDestination;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RouteScheduleRequest;
-use App\Http\Requests\UpdateRouteScheduleRequest;
 use App\Http\Resources\RouteScheduleResource;
-use Carbon\Carbon;
+use App\Http\Requests\UpdateRouteScheduleRequest;
 
 class RouteScheduleController extends Controller
 {
-    public function getRouteSchedules(Request $request, $routeID) 
-    {
-        $allRouteSchedules = RouteSchedule::where('route_destination_id', $routeID)->get();
-
-        if(!$allRouteSchedules->isEmpty()) {
-            return RouteScheduleResource::collection($allRouteSchedules);
-        }
-
-        return response()->json(['message' => 'There are no available schedules for this route'], 404);
-    }
-
     public function store(RouteScheduleRequest $request) 
     {
         $validated = $request->validated();
 
         $current_timestamp = Carbon::now();
 
-        $route = Route::find($validated['route_id']);
+        $routeDestination = RouteDestination::find($validated['route_destination_id']);
 
-        if($route) 
+        if($routeDestination) 
         {
             $routeSchedule = new RouteSchedule();
-            $routeSchedule->route_id = $validated['route_destination_id'];
+            $routeSchedule->route_destination_id = $validated['route_destination_id'];
             $routeSchedule->label = $validated['label'];
             $routeSchedule->departure_time = $validated['departure_time'];
             $routeSchedule->created_at = $current_timestamp;
@@ -45,20 +35,7 @@ class RouteScheduleController extends Controller
             return response()->json(['message' => 'Route schedule set successfully'], 200);
         }
 
-        return response()->json(['message' => 'The journey route does not exist'], 404);
-    }
-
-    public function show($id) 
-    {
-        $relationships = ['routeDestination.route'];
-        $schedule = RouteSchedule::find($id)->with($relationships);
-
-        if($schedule) 
-        {
-            return new RouteScheduleResource($schedule);
-        }
-
-        return response()->json(['message' => 'The route schedule does not exist'], 404);
+        return response()->json(['message' => 'The route destination does not exist'], 404);
     }
 
     public function update(UpdateRouteScheduleRequest $request, $id) 

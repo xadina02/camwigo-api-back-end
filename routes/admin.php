@@ -10,8 +10,9 @@ use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\VehicleRouteDestinationController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TicketController;
-use App\Http\Controllers\Admin\AuthenticationController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,24 +27,28 @@ use App\Http\Controllers\Admin\SettingController;
 
 Route::prefix('admin')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('vehicles-routes/{vehicle}', [VehicleRouteDestinationController::class, 'attributeRouteToVehicle']);
-        Route::resource('vehicles', VehicleController::class);
-        Route::get('vehicles/for/{route_id}', [VehicleController::class, 'getRouteVehicles']);
-        Route::resource('route-schedules', RouteScheduleController::class);
-        Route::get('route-schedules/for/{route_id}', [RouteScheduleController::class, 'getRouteSchedules']);
+        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']); // For CamWiGo SUPA Admins
+        Route::put('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
         Route::resource('vehicle-categories', VehicleCategoryController::class);
-        Route::resource('route-destinations', RouteDestinationController::class);
+        Route::resource('vehicles', VehicleController::class);
         Route::resource('journey-routes', RouteController::class);
-        Route::resource('tickets', TicketController::class);
-        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']);
-        Route::post('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
+        Route::resource('route-destinations', RouteDestinationController::class);
+        Route::resource('route-schedules', RouteScheduleController::class);
+        Route::post('vehicles-route-destinations/{id}', [VehicleRouteDestinationController::class, 'attributeRouteToVehicle']);
+        Route::delete('vehicles-route-destinations/remove/{id}', [VehicleRouteDestinationController::class, 'removeRouteFromVehicle']);
         Route::resource('reservations', ReservationController::class);
+        Route::resource('tickets', TicketController::class);
+        Route::controller(UserController::class)->prefix('manage-users')->group(function () {
+            Route::get('/all', 'index');
+            Route::get('/user/{id}', 'show');
+            Route::post('/register', 'register');
+            Route::put('/update/profile/{id}', 'update');
+            Route::post('/account/delete/{id}', 'destroy');
+        });
     });
-
-    Route::controller(AuthenticationController::class)->prefix('auth')->group(function () {
-        Route::post('/register', 'register');
-        Route::put('/update/profile', 'update')->middleware('auth:sanctum');
-        Route::get('/logout', 'logout')->middleware('auth:sanctum');
-        Route::post('/account/delete', 'destroy')->middleware('auth:sanctum');
+    Route::controller(AuthController::class)->prefix('auth')->group(function () {
+        Route::get('/login', 'getLoginPage')->name('admin.login');
+        Route::post('/login', 'login');
     });
+    
 });

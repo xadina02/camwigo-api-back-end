@@ -44,14 +44,28 @@ class PaymentController extends Controller
         ]);
         */
 
+        /**
+         * The rest of the following should only happen if payment is successfully received
+         * 
+         * Put condition here to check for that
+         */
+
         $reservation->amount_paid += $amount;
         $reservation->save();
-
-        // After successful payment, set $reservation->status = "paid" if `amount` == $reservation->vehicleRouteDestination->price | To show the reservation has been paid for but not yet completed (status = "complete" - where ticket and qr code have been generated and saved)
-        // After successful payment, set $reservation->status = "partial" if `amount` < $reservation->vehicleRouteDestination->price | To show the reservation has been paid for but not yet completed (status = "complete" - where ticket and qr code have been generated and saved)
-
-        if($reservation->amount_paid == $reservation->vehicleRouteDestination->price) 
+        
+        if($reservation->amount_paid < $reservation->vehicleRouteDestination->price) 
         {
+            $reservation->status = "partial";
+            $reservation->save();
+
+            return response()->json(['message' => 'Payment received. Complete your payment to get boarding pass!'], 200);
+        }
+
+        if($reservation->amount_paid >= $reservation->vehicleRouteDestination->price) 
+        {
+            $reservation->status = "paid";
+            $reservation->save();
+
             $ticket = $this->generateTicket($reservation_id);
             
             if($ticket != null) {
@@ -65,6 +79,8 @@ class PaymentController extends Controller
 
                 return response()->json(['message' => 'Payment successful! Reservation created!'], 200);
             }
+
+            return response()->json(['message' => 'Oops!! Something occurred and we couldn\'t process your ticket.'], 500);
         }
     }
 
