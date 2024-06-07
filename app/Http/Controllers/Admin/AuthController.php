@@ -18,9 +18,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request) 
     {
-        logger("In admin login method. The request: ", $request->all());
         $validated = $request->validated();
-        logger("Validated fields: ", $validated);
 
         $user = User::where('email', $validated['email'])->first();
 
