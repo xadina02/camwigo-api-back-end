@@ -146,13 +146,6 @@ CREATE TABLE `personal_access_tokens` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `personal_access_tokens`
---
-
-INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
-(1, 'App\\Models\\User', 1, 'LT01347I5IWML7YBFA05AuthToken', 'b981e91bdf26e88fc7bcbe78622eadae868b3037955294ef278b07b2a2be6804', '[\"*\"]', '2024-06-07 05:52:30', NULL, '2024-06-07 02:23:21', '2024-06-07 05:52:30');
-
 -- --------------------------------------------------------
 
 --
@@ -401,7 +394,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone`, `NIN`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Mosongo', 'Cute', 'yhoungcute@gmail.com', '671586513', 'LT01347I5IWML7YBFA05', NULL, NULL, NULL, '2024-06-07 02:23:21', '2024-06-07 02:23:21', NULL);
+(1, 'John', 'Doe', 'johndoe@gmail.com', '677213456', 'SW01992L5IKYQ7YBFA13', NULL, NULL, NULL, '2024-06-07 02:23:21', '2024-06-07 02:23:21', NULL);
 
 -- --------------------------------------------------------
 
