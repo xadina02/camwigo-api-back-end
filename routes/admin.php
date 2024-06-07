@@ -46,9 +46,11 @@ Route::prefix('admin')->group(function () {
             Route::post('/account/delete/{id}', 'destroy');
         });
     });
+    
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::get('/login', 'getLoginPage')->name('admin.login');
         Route::post('/login', 'login');
+        Route::get('/logout', 'logout')->middleware('auth:sanctum');
     });
     
 });
