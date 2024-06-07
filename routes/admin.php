@@ -27,7 +27,7 @@ use App\Http\Controllers\Admin\AuthController;
 
 Route::prefix('admin')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']); // For CamWiGo SUPA Admins
+        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']); // For CamWiGo Super Admins
         Route::put('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
         Route::resource('vehicle-categories', VehicleCategoryController::class);
         Route::resource('vehicles', VehicleController::class);

@@ -29,59 +29,65 @@ class PaymentController extends Controller
 
         $reservation = Reservation::find($reservation_id);
 
-        // For testing - To Be Removed!
-        $amount = $validated['amount'];
-        // $amount = $reservation->vehicleRouteDestination->price;
-
-        /*
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $charge = Charge::create([
-            'amount' => 1000, // amount in cents
-            'currency' => 'usd',
-            'source' => $request->stripeToken,
-            'description' => 'Test payment from Laravel app',
-        ]);
-        */
-
-        /**
-         * The rest of the following should only happen if payment is successfully received
-         * 
-         * Put condition here to check for that
-         */
-
-        $reservation->amount_paid += $amount;
-        $reservation->save();
-        
-        if($reservation->amount_paid < $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
+        if($reservation) 
         {
-            $reservation->status = "partial";
+
+            // For testing - To Be Removed!
+            $amount = $validated['amount'];
+            // $amount = $reservation->vehicleRouteDestination->price;
+
+            /*
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $charge = Charge::create([
+                'amount' => 1000, // amount in cents
+                'currency' => 'usd',
+                'source' => $request->stripeToken,
+                'description' => 'Test payment from Laravel app',
+            ]);
+            */
+
+            /**
+             * The rest of the following should only happen if payment is successfully received
+             * 
+             * Put condition here to check for that
+             */
+
+            $reservation->amount_paid += $amount;
             $reservation->save();
-
-            return response()->json(['message' => 'Payment received. Complete your payment to get boarding pass!'], 200);
-        }
-
-        if($reservation->amount_paid >= $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
-        {
-            $reservation->status = "paid";
-            $reservation->save();
-
-            $ticket = $this->generateTicket($reservation_id);
             
-            if($ticket != null) {
-                $qr_code_link = $this->generateQrCode($ticket);
-
-                $ticket->QR_code_image_link = $qr_code_link;
-                $ticket->save();
-
-                $reservation->status = "completed";
+            if($reservation->amount_paid < $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
+            {
+                $reservation->status = "partial";
                 $reservation->save();
 
-                return response()->json(['message' => 'Payment successful! Reservation created!'], 200);
+                return response()->json(['message' => 'Payment received. Complete your payment to get boarding pass!'], 200);
             }
 
-            return response()->json(['message' => 'Oops!! Something occurred and we couldn\'t process your ticket.'], 500);
+            if($reservation->amount_paid >= $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
+            {
+                $reservation->status = "paid";
+                $reservation->save();
+
+                $ticket = $this->generateTicket($reservation_id);
+                
+                if($ticket != null) {
+                    $qr_code_link = $this->generateQrCode($ticket);
+
+                    $ticket->QR_code_image_link = $qr_code_link;
+                    $ticket->save();
+
+                    $reservation->status = "completed";
+                    $reservation->save();
+
+                    return response()->json(['message' => 'Payment successful! Reservation created!'], 200);
+                }
+
+                return response()->json(['message' => 'Oops!! Something occurred and we couldn\'t process your ticket.'], 500);
+            }
         }
+
+        return response()->json(['message' => 'The reservation to pay for could not be found.'], 404);
     }
 
     public function generateTicket($id): Ticket
