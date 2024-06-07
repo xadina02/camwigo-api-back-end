@@ -50,7 +50,7 @@ Route::prefix('admin')->group(function () {
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::get('/login', 'getLoginPage')->name('admin.login');
         Route::post('/login', 'login');
-        Route::get('/logout', 'logout')->middleware('auth:sanctum');
+        Route::get('/logout', 'logout')->middleware('auth:sanctum', 'admin');
     });
     
 });
