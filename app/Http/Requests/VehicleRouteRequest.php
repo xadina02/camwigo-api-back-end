@@ -23,7 +23,6 @@ class VehicleRouteRequest extends FormRequest
     {
         return [
             'route_schedule_id' => ['required', 'integer'],
-            'price' => ['required', 'numeric'],
             'dates' => ['required', 'array'],
             'dates.*' => ['required', 'date_format:Y-m-d']
         ];

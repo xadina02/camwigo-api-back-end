@@ -23,7 +23,8 @@ class RouteDestinationRequest extends FormRequest
     {
         return [
             'route_id' => ['required', 'integer'],
-            'destination' => ['required', 'string']
+            'destination' => ['required', 'string'],
+            'price' => ['required', 'numeric']
         ];
     }
 }

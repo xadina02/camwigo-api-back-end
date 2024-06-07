@@ -13,6 +13,23 @@ use Carbon\Carbon;
 
 class RouteDestinationController extends Controller
 {
+    public function store(RouteDestinationRequest $request) 
+    {
+        $validated = $request->validated();
+
+        $current_timestamp = Carbon::now();
+
+        $routeDestination = new RouteDestination();
+        $routeDestination->route_id = $validated['route_id'];
+        $routeDestination->destination = $validated['destination'];
+        $routeDestination->price = $validated['price'];
+        $routeDestination->created_at = $current_timestamp;
+        $routeDestination->updated_at = $current_timestamp;
+        $routeDestination->save();
+
+        return response()->json(['message' => 'Journey route created successfully'], 200);
+    }
+
     public function update(UpdateRouteDestinationRequest $request, $id) 
     {
         $validated = $request->validated();

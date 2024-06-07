@@ -53,7 +53,7 @@ class PaymentController extends Controller
         $reservation->amount_paid += $amount;
         $reservation->save();
         
-        if($reservation->amount_paid < $reservation->vehicleRouteDestination->price) 
+        if($reservation->amount_paid < $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
         {
             $reservation->status = "partial";
             $reservation->save();
@@ -61,7 +61,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment received. Complete your payment to get boarding pass!'], 200);
         }
 
-        if($reservation->amount_paid >= $reservation->vehicleRouteDestination->price) 
+        if($reservation->amount_paid >= $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
         {
             $reservation->status = "paid";
             $reservation->save();
@@ -89,7 +89,7 @@ class PaymentController extends Controller
         $reservation = Reservation::find($id);
 
         $current_timestamp = Carbon::now();
-        $validity_timestamp = Carbon::now()->format('Y-m-d') . ' ' . Carbon::parse($reservation->vehicleRouteDestination->routeSchedule->departure_time)->addMinutes(15)->format('H:i:s');
+        $validity_timestamp = Carbon::now()->format('Y-m-d') . ' ' . Carbon::parse($reservation->vehicleRouteDestination->routeSchedule->departure_time)->addMinutes(30)->format('H:i:s');
 
         if($reservation) {
             $ticket = new Ticket();

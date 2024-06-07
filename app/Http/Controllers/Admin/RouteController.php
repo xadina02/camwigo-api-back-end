@@ -34,15 +34,13 @@ class RouteController extends Controller
 
         if($journeyRoute->save()) 
         {
-            $destinations = $validated['destinations'];
-
-            foreach ($destinations as $destination) 
-            {
-                $journeyRouteDestinations = new RouteDestination();
-                $journeyRouteDestinations->route_id = $journeyRoute->id;
-                $journeyRouteDestinations->destination = $destination;
-                $journeyRouteDestinations->save();
-            }
+            $journeyRouteDestination = new RouteDestination();
+            $journeyRouteDestination->route_id = $journeyRoute->id;
+            $journeyRouteDestination->destination = $validated['destination'];
+            $journeyRouteDestination->price = $validated['price'];
+            $journeyRoute->created_at = $current_timestamp;
+            $journeyRoute->updated_at = $current_timestamp;
+            $journeyRouteDestination->save();
 
             return response()->json(['message' => 'Journey route created successfully'], 200);
         }

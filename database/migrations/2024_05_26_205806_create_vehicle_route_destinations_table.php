@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnUpdate()->nullable();
             $table->foreignId('route_schedule_id')->constrained()->cascadeOnUpdate()->nullable();
-            $table->double('price');
             $table->integer('available_seats');
             $table->integer('reserved_seats');
             $table->timestamp('date');

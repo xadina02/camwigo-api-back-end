@@ -29,7 +29,6 @@ class VehicleRouteDestinationController extends Controller
                     $vehicleRouteDest->route_schedule_id = $validated['route_schedule_id'];
                     $vehicleRouteDest->available_seats = $vehicle->vehicleCategory->size;
                     $vehicleRouteDest->reserved_seats = 0;
-                    $vehicleRouteDest->price = $validated['price'];
                     $vehicleRouteDest->date = $date;
                     $vehicleRouteDest->created_at = $current_timestamp;
                     $vehicleRouteDest->updated_at = $current_timestamp;

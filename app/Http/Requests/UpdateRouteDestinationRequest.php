@@ -22,7 +22,8 @@ class UpdateRouteDestinationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'destination' => ['required', 'string']
+            'destination' => ['required', 'string'],
+            'price' => ['required', 'numeric']
         ];
     }
 }
