@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\AuthController;
 */
 
 Route::prefix('admin')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum', 'admin')->group(function () {
         Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']); // For CamWiGo Super Admins
         Route::put('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
         Route::resource('vehicle-categories', VehicleCategoryController::class);
@@ -46,7 +46,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/account/delete/{id}', 'destroy');
         });
     });
-    
+
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::get('/login', 'getLoginPage')->name('admin.login');
         Route::post('/login', 'login');
