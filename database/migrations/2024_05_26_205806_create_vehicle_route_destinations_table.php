@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('route_schedule_id')->constrained()->cascadeOnUpdate()->nullable();
             $table->integer('available_seats');
             $table->integer('reserved_seats');
-            $table->timestamp('date');
+            $table->date('journey_date');
             $table->timestamps();
         });
     }

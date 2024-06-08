@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AuthController;
 
 /*
@@ -44,6 +45,10 @@ Route::prefix('admin')->group(function () {
             Route::post('/register', 'register');
             Route::put('/update/profile/{id}', 'update');
             Route::post('/account/delete/{id}', 'destroy');
+        });
+        Route::controller(PaymentController::class)->group(function () {
+            Route::get('make-payment', 'handleGet');
+            Route::post('make-payment/{reservation}', 'handlePayment')->name('payment.post');
         });
     });
 

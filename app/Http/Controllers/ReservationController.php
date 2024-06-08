@@ -14,14 +14,12 @@ use App\Http\Requests\UpdateReservationRequest;
 
 class ReservationController extends Controller
 {
-    public function store(ReservationRequest $request) 
+    public function store(Request $request, $userId, $reservationId) 
     {
-        $validated = $request->validated();
-
         $current_timestamp = Carbon::now();
 
-        $user = User::find($validated['user_id']);
-        $vehicleRouteDestination = VehicleRouteDestination::find($validated['vehicle_route_destination_id']);
+        $user = User::find($userId);
+        $vehicleRouteDestination = VehicleRouteDestination::find($reservationId);
 
         if($user) {
             if($vehicleRouteDestination) {
@@ -30,9 +28,9 @@ class ReservationController extends Controller
                     DB::beginTransaction();
                     try {
                         $reservation = new Reservation();
-                        $reservation->user_id = $validated['user_id'];
-                        $reservation->vehicle_route_destination_id = $validated['vehicle_route_destination_id'];
-                        $reservation->position = $validated['position'];
+                        $reservation->user_id = $userId;
+                        $reservation->vehicle_route_destination_id = $reservationId;
+                        $reservation->position = $request->get('position');
                         $reservation->status = "pending";
                         $reservation->created_at = $current_timestamp;
                         $reservation->updated_at = $current_timestamp;
@@ -44,7 +42,8 @@ class ReservationController extends Controller
                         
                         DB::commit();
 
-                        return response()->json(['message' => 'Reservation created successfully'], 200);
+                        // return response()->json(['message' => 'Reservation created successfully', 'identifier' => $reservation->id], 200);
+                        return new ReservationResource($reservation);
                     } 
                     catch (\Exception $e) 
                     {

@@ -26,7 +26,7 @@ return new class extends Migration
         foreach($allTables as $aTable) 
         {
             Schema::table($aTable, function (Blueprint $table) {
-                $table->timestamp('deleted_at')->nullable();
+                $table->datetime('deleted_at')->nullable();
             });
         }
     }

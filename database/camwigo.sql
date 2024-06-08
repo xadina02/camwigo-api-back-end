@@ -84,7 +84,7 @@ INSERT INTO `route_schedules` (`id`, `route_destination_id`, `label`, `departure
 (40, 8, '{\"en\":\"Late Night voyage\"}', '21:00:00', '2024-06-07 04:56:16', '2024-06-07 04:56:16', NULL);
 
 
-INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `date`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `journey_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 1, 1, 70, 0, '2024-06-09 23:00:00', '2024-06-07 05:26:59', '2024-06-07 05:26:59', NULL),
 (2, 1, 1, 70, 0, '2024-06-10 23:00:00', '2024-06-07 05:26:59', '2024-06-07 05:26:59', NULL),
 (3, 1, 1, 70, 0, '2024-06-11 23:00:00', '2024-06-07 05:26:59', '2024-06-07 05:26:59', NULL),
@@ -117,7 +117,7 @@ INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id
 (30, 1, 4, 70, 0, '2024-06-10 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
 (31, 1, 4, 70, 0, '2024-06-11 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
 (32, 1, 4, 70, 0, '2024-06-12 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
-(33, 1, 4, 68, 2, '2024-06-07 06:44:54', '2024-06-07 05:27:50', '2024-06-07 05:44:54', NULL),
+(33, 1, 4, 68, 2, '2024-06-13 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:44:54', NULL),
 (34, 1, 4, 70, 0, '2024-06-14 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
 (35, 1, 4, 70, 0, '2024-06-15 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
 (36, 1, 4, 70, 0, '2024-06-16 23:00:00', '2024-06-07 05:27:50', '2024-06-07 05:27:50', NULL),
@@ -617,7 +617,7 @@ INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id
 (530, 3, 20, 30, 0, '2024-06-20 23:00:00', '2024-06-07 05:32:31', '2024-06-07 05:32:31', NULL),
 (531, 3, 20, 30, 0, '2024-06-21 23:00:00', '2024-06-07 05:32:31', '2024-06-07 05:32:31', NULL),
 (532, 3, 20, 30, 0, '2024-06-22 23:00:00', '2024-06-07 05:32:31', '2024-06-07 05:32:31', NULL);
-INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `date`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `journey_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (533, 3, 21, 30, 0, '2024-06-09 23:00:00', '2024-06-07 05:32:37', '2024-06-07 05:32:37', NULL),
 (534, 3, 21, 30, 0, '2024-06-10 23:00:00', '2024-06-07 05:32:37', '2024-06-07 05:32:37', NULL),
 (535, 3, 21, 30, 0, '2024-06-11 23:00:00', '2024-06-07 05:32:37', '2024-06-07 05:32:37', NULL),
@@ -1148,7 +1148,7 @@ INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id
 (1060, 4, 30, 30, 0, '2024-06-18 23:00:00', '2024-06-07 05:37:30', '2024-06-07 05:37:30', NULL),
 (1061, 4, 30, 30, 0, '2024-06-19 23:00:00', '2024-06-07 05:37:30', '2024-06-07 05:37:30', NULL),
 (1062, 4, 30, 30, 0, '2024-06-20 23:00:00', '2024-06-07 05:37:30', '2024-06-07 05:37:30', NULL);
-INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `date`, `created_at`, `updated_at`, `deleted_at`) VALUES
+INSERT INTO `vehicle_route_destinations` (`id`, `vehicle_id`, `route_schedule_id`, `available_seats`, `reserved_seats`, `journey_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1063, 4, 30, 30, 0, '2024-06-21 23:00:00', '2024-06-07 05:37:30', '2024-06-07 05:37:30', NULL),
 (1064, 4, 30, 30, 0, '2024-06-22 23:00:00', '2024-06-07 05:37:30', '2024-06-07 05:37:30', NULL),
 (1065, 4, 31, 30, 0, '2024-06-09 23:00:00', '2024-06-07 05:37:34', '2024-06-07 05:37:34', NULL),

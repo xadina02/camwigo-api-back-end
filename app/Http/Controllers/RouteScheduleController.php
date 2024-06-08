@@ -12,8 +12,15 @@ use Carbon\Carbon;
 
 class RouteScheduleController extends Controller
 {
-    public function getRouteSchedulesList(Request $request, $route_destination) 
+    public function getRouteSchedules(Request $request, $id) 
     {
-        //
+        $allRouteSchedules = RouteSchedule::where('route_destination_id', $id)->select('id', 'label', 'departure_time')->orderBy('route_schedules.departure_time', 'asc')->get();
+
+        if($allRouteSchedules->isEmpty())
+        {
+            return response()->json(['message' => 'This route has not been scheduled for travel.'], 404);
+        }
+
+        return RouteScheduleResource::collection($allRouteSchedules);
     }
 }
