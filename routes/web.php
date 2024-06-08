@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +20,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/payment', [PaymentController::class, 'handleGet']);
+// Route::get('/payment', [PaymentController::class, 'handleGet']);
+
+Route::prefix('admin')->group(function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('dashboard', 'getHomePage')->name('homepage');
+    });
+    Route::controller(AuthController::class)->prefix('auth')->middleware('web')->group(function () {
+        Route::get('/login', 'getLoginPage')->name('admin.login');
+    });
+});

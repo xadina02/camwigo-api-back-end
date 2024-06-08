@@ -27,16 +27,20 @@ use App\Http\Controllers\Admin\AuthController;
 */
 
 Route::prefix('admin')->group(function () {
-    Route::middleware('auth:sanctum', 'admin')->group(function () {
-        Route::post('agency-settings', [SettingController::class, 'registerAgencyDetails']); // For CamWiGo Super Admins
-        Route::put('agency-settings/update', [SettingController::class, 'updateAgencyDetails']);
+    // Route::middleware('auth:sanctum', 'admin')->group(function () {
+        Route::controller(SettingController::class)->group(function () {
+            Route::post('agency-settings', 'registerAgencyDetails'); // For CamWiGo Super Admins
+            Route::put('agency-settings/update', 'updateAgencyDetails');
+        });
         Route::resource('vehicle-categories', VehicleCategoryController::class);
         Route::resource('vehicles', VehicleController::class);
         Route::resource('journey-routes', RouteController::class);
         Route::resource('route-destinations', RouteDestinationController::class);
         Route::resource('route-schedules', RouteScheduleController::class);
-        Route::post('vehicles-route-destinations/{id}', [VehicleRouteDestinationController::class, 'attributeRouteToVehicle']);
-        Route::delete('vehicles-route-destinations/remove/{id}', [VehicleRouteDestinationController::class, 'removeRouteFromVehicle']);
+        Route::controller(VehicleRouteDestinationController::class)->group(function () {
+            Route::post('vehicles-route-destinations/{id}', 'attributeRouteToVehicle');
+            Route::delete('vehicles-route-destinations/remove/{id}', 'removeRouteFromVehicle');
+        });
         Route::resource('reservations', ReservationController::class);
         Route::resource('tickets', TicketController::class);
         Route::controller(UserController::class)->prefix('manage-users')->group(function () {
@@ -50,10 +54,9 @@ Route::prefix('admin')->group(function () {
             Route::get('make-payment', 'handleGet');
             Route::post('make-payment/{reservation}', 'handlePayment')->name('payment.post');
         });
-    });
+    // });
 
-    Route::controller(AuthController::class)->prefix('auth')->group(function () {
-        Route::get('/login', 'getLoginPage')->name('admin.login');
+    Route::controller(AuthController::class)->prefix('auth')->middleware('web')->group(function () {
         Route::post('/login', 'login');
         Route::get('/logout', 'logout')->middleware('auth:sanctum', 'admin');
     });
