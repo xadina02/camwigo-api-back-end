@@ -12,57 +12,34 @@ use Carbon\Carbon;
 
 class RouteDestinationController extends Controller
 {
-    public function store(RouteDestinationRequest $request) 
+    public function getRouteDestinationList(Request $request, $id) 
     {
-        $validated = $request->validated();
+        $allRouteDestinations = RouteDestination::where('route_id', $id)->select('id', 'destination')->get();
 
-        $current_timestamp = Carbon::now();
-
-        $route = Route::find($validated['route_id']);
-
-        if($route) 
+        if($allRouteDestinations->isEmpty())
         {
-            $routeDestination = new RouteDestination();
-            $routeDestination->route_id = $validated['route_id'];
-            $routeDestination->destination = $validated['destination'];
-            $routeDestination->created_at = $current_timestamp;
-            $routeDestination->updated_at = $current_timestamp;
-            $routeDestination->save();
-
-            return response()->json(['message' => 'Route destination set successfully'], 200);
+            return response()->json(['message' => 'There are no current destinations to this route.'], 404);
         }
 
-        return response()->json(['message' => 'The journey route does not exist'], 404);
+        return RouteDestinationResource::collection($allRouteDestinations);
     }
 
-    public function update(UpdateRouteDestinationRequest $request, $id) 
+    public function searchRouteDestinations(Request $request, $id)
     {
-        $validated = $request->validated();
+        $searchQuery = strtolower($request->input('search_text'));
 
-        $current_timestamp = Carbon::now();
-        $validated['updated_at'] = $current_timestamp;
-
-        $routeDestination = RouteDestination::find($id);
-
-        if ($routeDestination) {
-            $routeDestination->update($validated);
-
-            return response()->json(['message' => 'Route destination updated successfully'], 200);
-        }
-
-        return response()->json(['message' => 'Route destination not found'], 404);
-    }
-
-    public function destroy($id) 
-    {
-        $routeDestination = RouteDestination::find($id);
-
-        if ($routeDestination) {
-            $routeDestination->delete();
-
-            return response()->json(['message' => 'Route destination deleted successfully'], 200);
-        }
+        $allRouteDestinations = RouteDestination::where('route_id', $id)->where(function ($query) use ($searchQuery) {
+            $query->whereRaw('LOWER(destination) LIKE ?', ["%{$searchQuery}%"]);
+        })
+        ->select('id', 'destination')
+        ->orderBy('route_destinations.destination', 'asc')
+        ->get();
         
-        return response()->json(['message' => 'Route destination not found'], 404);
+        if($allRouteDestinations->isEmpty())
+        {
+            return response()->json(['message' => 'Nothing found.'], 404);
+        }
+
+        return RouteDestinationResource::collection($allRouteDestinations);
     }
 }

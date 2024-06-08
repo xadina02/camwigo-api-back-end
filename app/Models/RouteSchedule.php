@@ -16,13 +16,13 @@ class RouteSchedule extends Model
     protected $guarded = ['id'];
     protected $translatable = ['label'];
 
-    public function route(): BelongsTo
+    public function routeDestination(): BelongsTo
     {
-        return $this->belongsTo(Route::class);
+        return $this->belongsTo(RouteDestination::class);
     }
 
-    public function tickets(): HasMany
+    public function vehicleRouteDestinations(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(VehicleRouteDestination::class);
     }
 }

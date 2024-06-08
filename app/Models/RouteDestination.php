@@ -21,8 +21,8 @@ class RouteDestination extends Model
         return $this->belongsTo(Route::class);
     }
 
-    public function tickets(): HasMany
+    public function routeSchedules(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(RouteSchedule::class);
     }
 }

@@ -18,13 +18,15 @@ return new class extends Migration
             'vehicles',
             'reservations',
             'tickets',
-            'vehicle_categories'
+            'vehicle_categories',
+            'route_destinations',
+            'vehicle_route_destinations'
         ];
 
         foreach($allTables as $aTable) 
         {
             Schema::table($aTable, function (Blueprint $table) {
-                $table->timestamp('deleted_at')->nullable();
+                $table->datetime('deleted_at')->nullable();
             });
         }
     }

@@ -27,6 +27,7 @@ class UpdateUserRequest extends FormRequest
             'last_name' => ['nullable', 'string'],
             'email' => ['nullable', 'email', new UniqueAttribute('users')],
             'phone' => ['nullable', 'string', new UniqueAttribute('users')],
+            'NIN' => ['nullable', 'string', new UniqueAttribute('users')],
         ];
     }
 }

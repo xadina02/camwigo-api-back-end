@@ -23,7 +23,8 @@ class RouteRequest extends FormRequest
     {
         return [
             'origin' => ['required', 'string'],
-            'destination.*' => ['required', 'string']
+            'price' => ['required', 'numeric'],
+            'destination' => ['required', 'string']
         ];
     }
 }

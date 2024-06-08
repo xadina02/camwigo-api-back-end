@@ -23,7 +23,7 @@ class ReservationRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'integer'],
-            'vehicle_id' => ['required', 'integer'],
+            'vehicle_route_destination_id' => ['required', 'integer'],
             'position' => ['required', 'integer'],
         ];
     }

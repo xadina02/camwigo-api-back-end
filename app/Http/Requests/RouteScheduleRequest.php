@@ -22,7 +22,7 @@ class RouteScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'route_id' => ['required', 'integer'],
+            'route_destination_id' => ['required', 'integer'],
             'label' => ['required', 'string'],
             'departure_time' => ['required', 'date_format:H:i']
         ];

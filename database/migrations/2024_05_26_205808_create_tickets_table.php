@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('reservation_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('route_schedule_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('route_destination_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('QR_code_image_link')->nullable();
             $table->enum('status', ['new', 'used'])->default('new');
             $table->timestamp('validity');

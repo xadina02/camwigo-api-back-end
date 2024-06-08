@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Http\Requests\RegisterAgencyRequest;
@@ -10,6 +11,9 @@ use App\Helpers\ImageHelper;
 
 class SettingController extends Controller
 {
+    /**
+     * Strictly for CamWiGo SUPA Admins
+     */
     public function registerAgencyDetails(RegisterAgencyRequest $request)
     {
         $validated = $request->validated();
@@ -36,7 +40,9 @@ class SettingController extends Controller
 
     public function updateAgencyDetails(RegisterAgencyRequest $request) 
     {
+        logger('Request details:', $request->all());
         $validated = $request->validated();
+        logger('Validated data:', $validated);
         $keys = ['agency', 'address', 'email', 'image'];
 
         foreach($keys as $key) 

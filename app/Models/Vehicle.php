@@ -14,14 +14,9 @@ class Vehicle extends Model
 
     protected $guarded = ['id'];
 
-    public function reservations(): HasMany
+    public function vehicleRouteDestinations(): HasMany
     {
-        return $this->hasMany(Reservation::class);
-    }
-
-    public function route(): HasOne
-    {
-        return $this->hasOne(Route::class);
+        return $this->hasMany(VehicleRouteDestination::class);
     }
 
     public function vehicleCategory(): BelongsTo

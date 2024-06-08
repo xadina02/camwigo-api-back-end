@@ -10,10 +10,8 @@
     <form action="{{ route('payment.post', ["reservation" => 1]) }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="route-schedule">Give route schedule id</label>
-            <input type="number" id="route-schedule" name="route_schedule_id"> <br>
-            <label for="route-destination">Give route destination id</label>
-            <input type="number" id="route-destination" name="route_destination_id"> <br>
+            <label for="route-schedule">Amount</label>
+            <input type="number" id="route-schedule" name="amount"> <br>
         </div>
         <button class="btn btn-primary">Submit Payment</button>
     </form>

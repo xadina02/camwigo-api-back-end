@@ -12,85 +12,33 @@ use Carbon\Carbon;
 
 class RouteController extends Controller
 {
-    public function index(Request $request)
+    public function getAllRoutes(Request $request)
     {
-        // $relationships = ['routeSchedules'];
-        $allRoutes = Route::all();
+        $allRoutes = Route::select('id', 'origin')->get();
 
-        if(!$allRoutes->isEmpty()) {
-            return RouteResource::collection($allRoutes);
-        }
-
-        return response()->json(['message' => 'There are no available journey routes'], 404);
-    }
-
-    public function store(RouteRequest $request)
-    {
-        $validated = $request->validated();
-
-        $current_timestamp = Carbon::now();
-
-        $journeyRoute = new Route();
-        $journeyRoute->origin = $validated['origin'];
-        $journeyRoute->created_at = $current_timestamp;
-        $journeyRoute->updated_at = $current_timestamp;
-
-        if($journeyRoute->save()) 
+        if($allRoutes->isEmpty())
         {
-            $destinations = $validated['destination'];
-
-            foreach ($destinations as $destination) 
-            {
-                $journeyRouteDestinations = new RouteDestination();
-                $journeyRouteDestinations->route_id = $journeyRoute->id;
-                $journeyRouteDestinations->destination = $destination;
-                $journeyRouteDestinations->save();
-            }
-
-            return response()->json(['message' => 'Journey route created successfully'], 200);
+            return response()->json(['message' => 'No available routes yet.'], 404);
         }
+
+        return RouteResource::collection($allRoutes);
     }
 
-    public function show($id)
+    public function searchRoutes(Request $request)
     {
-        $relationships = ['vehicles.vehicleCategory', 'routeSchedules', 'routeDestinations'];
-        $journeyRoute = Route::find($id)->with($relationships);
+        $searchQuery = strtolower($request->input('search_text'));
 
-        if ($journeyRoute) {
-            return new RouteResource($journeyRoute);
-        }
-
-        return response()->json(['message' => 'Journey route not found'], 404);
-    }
-
-    public function update(UpdateRouteRequest $request, $id)
-    {
-        $validated = $request->validated();
-
-        $current_timestamp = Carbon::now();
-        $validated['updated_at'] = $current_timestamp;
-
-        $journeyRoute = Route::find($id);
-
-        if ($journeyRoute) {
-            $journeyRoute->update($validated);
-
-            return response()->json(['message' => 'Journey route updated successfully'], 200);
-        }
-
-        return response()->json(['message' => 'Journey route not found'], 404);
-    }
-
-    public function destroy($id)
-    {
-        $journeyRoute = Route::find($id);
-
-        if ($journeyRoute) {
-            $journeyRoute->delete();
-
-            return response()->json(['message' => 'Journey route deleted successfully'], 200);
-        }
+        $allRoutes = Route::where(function ($query) use ($searchQuery) {
+            $query->whereRaw('LOWER(origin) LIKE ?', ["%{$searchQuery}%"]);
+        })
+        ->select('id', 'origin')
+        ->orderBy('routes.origin', 'asc')
+        ->get();
         
-        return response()->json(['message' => 'Journey route not found'], 404);
+        if($allRoutes->isEmpty())
+        {
+            return response()->json(['message' => 'Nothing found.'], 404);
+        }
+        return RouteResource::collection($allRoutes);
     }
 }

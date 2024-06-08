@@ -15,16 +15,6 @@ class Route extends Model
     protected $guarded = ['id'];
     protected $translatable = ['origin'];
 
-    public function vehicles(): HasMany
-    {
-        return $this->hasMany(Vehicle::class);
-    }
-
-    public function routeSchedules(): HasMany
-    {
-        return $this->hasMany(RouteSchedule::class);
-    }
-
     public function routeDestinations(): HasMany
     {
         return $this->hasMany(RouteDestination::class);

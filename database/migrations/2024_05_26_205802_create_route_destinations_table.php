@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('route_id')->constrained()->cascadeOnUpdate()->nullable();
             $table->json('destination');
+            $table->double('price');
             $table->timestamps();
         });
     }

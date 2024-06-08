@@ -12,74 +12,15 @@ use Carbon\Carbon;
 
 class RouteScheduleController extends Controller
 {
-    public function getRouteSchedules(Request $request, $routeID) 
+    public function getRouteSchedules(Request $request, $id) 
     {
-        $allRouteSchedules = RouteSchedule::where('route_id', $routeID)->get();
+        $allRouteSchedules = RouteSchedule::where('route_destination_id', $id)->select('id', 'label', 'departure_time')->orderBy('route_schedules.departure_time', 'asc')->get();
 
-        if(!$allRouteSchedules->isEmpty()) {
-            return RouteScheduleResource::collection($allRouteSchedules);
-        }
-
-        return response()->json(['message' => 'There are no available schedules for this route'], 404);
-    }
-
-    public function store(RouteScheduleRequest $request) 
-    {
-        $validated = $request->validated();
-
-        $current_timestamp = Carbon::now();
-
-        $route = Route::find($validated['route_id']);
-
-        if($route) 
+        if($allRouteSchedules->isEmpty())
         {
-            $routeSchedule = new RouteSchedule();
-            $routeSchedule->route_id = $validated['route_id'];
-            $routeSchedule->label = $validated['label'];
-            $routeSchedule->departure_time = $validated['departure_time'];
-            $routeSchedule->created_at = $current_timestamp;
-            $routeSchedule->updated_at = $current_timestamp;
-            $routeSchedule->save();
-
-            return response()->json(['message' => 'Route schedule set successfully'], 200);
+            return response()->json(['message' => 'This route has not been scheduled for travel.'], 404);
         }
 
-        return response()->json(['message' => 'The journey route does not exist'], 404);
-    }
-
-    public function show() 
-    {
-        //
-    }
-
-    public function update(UpdateRouteScheduleRequest $request, $id) 
-    {
-        $validated = $request->validated();
-
-        $current_timestamp = Carbon::now();
-        $validated['updated_at'] = $current_timestamp;
-
-        $routeSchedule = RouteSchedule::find($id);
-
-        if ($routeSchedule) {
-            $routeSchedule->update($validated);
-
-            return response()->json(['message' => 'Route schedule updated successfully'], 200);
-        }
-
-        return response()->json(['message' => 'Route schedule not found'], 404);
-    }
-
-    public function destroy($id) 
-    {
-        $routeSchedule = RouteSchedule::find($id);
-
-        if ($routeSchedule) {
-            $routeSchedule->delete();
-
-            return response()->json(['message' => 'Route schedule deleted successfully'], 200);
-        }
-        
-        return response()->json(['message' => 'Route schedule not found'], 404);
+        return RouteScheduleResource::collection($allRouteSchedules);
     }
 }
