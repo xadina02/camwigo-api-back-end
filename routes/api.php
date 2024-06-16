@@ -49,7 +49,7 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
             });
 
             Route::controller(PaymentController::class)->group(function () {
-                Route::post('make-payment/{reservation}', 'handlePayment')->name('payment.post');
+                Route::post('make-payment/{reservation}', 'handlePayment');
             });
             
             Route::controller(TicketController::class)->group(function () {
@@ -66,4 +66,3 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
     });
 
 });
-    require __DIR__ . '/admin.php';

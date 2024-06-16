@@ -19,7 +19,8 @@ class UserController extends Controller
         })->get();
         
         // return data with a view
-        return response()->json(['users' => $users], 200);
+        // return response()->json(['users' => $users], 200);
+        return view('admin.user', compact('users'));
     }
 
     public function show($id) 

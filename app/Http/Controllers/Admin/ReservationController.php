@@ -20,7 +20,8 @@ class ReservationController extends Controller
         $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route'];
         $allReservations = Reservation::with($relationships)->get();
 
-        return response()->json(['reservations' => $allReservations], 200);
+        // return response()->json(['reservations' => $allReservations], 200);
+        return view('admin.reservation', compact('allReservations'));
     }
 
     public function store(ReservationRequest $request) 

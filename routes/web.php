@@ -30,3 +30,4 @@ Route::prefix('admin')->group(function () {
         Route::get('/login', 'getLoginPage')->name('admin.login');
     });
 });
+require __DIR__ . '/admin.php';

@@ -257,12 +257,12 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'admin/dashboard',
     'logout_url' => 'api/admin/auth/logout',
     'login_url' => 'api/admin/auth/login',
     'register_url' => null,
     'password_reset_url' => null,
-    'password_email_url' => 'password/email',
+    'password_email_url' => 'null',
     'profile_url' => false,
 
     /*
@@ -309,7 +309,7 @@ return [
             'text' => 'Logout',
             'url' => 'api/admin/auth/logout',
             'topnav_right' => true,
-            'classes' => 'btn btn-danger',
+            'classes' => 'btn custom-logout-button',
         ],
 
         // Sidebar items:
@@ -322,12 +322,62 @@ return [
             'url' => 'admin/blog',
             'can' => 'manage-blog',
         ],
+        // [
+        //     'text' => 'pages',
+        //     'url' => 'admin/pages',
+        //     'icon' => 'far fa-fw fa-file',
+        //     'label' => 4,
+        //     'label_color' => 'success',
+        // ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
+            'type' => 'button',
+            'text' => 'Dashboard',
+            'icon' => 'fas fa-fw fa-tachometer-alt',
+            'url' => 'admin/dashboard',
+        ],
+        ['header' => 'AGENCY SETTINGS'],
+        [
+            'text' => 'Vehicle',
+            'icon' => 'fas fa-fw fa-bus',
+            'stylesheet' => 'css/custom.css',
+            'submenu' => [
+                [
+                    'text' => 'Vehicle Category',
+                    'url' => 'admin/vehicle-categories',
+                    'icon' => 'fas fa-fw fa-taxi',
+                ],
+                [
+                    'text' => 'Vehicles',
+                    'url' => 'admin/vehicles',
+                    'icon' => 'fas fa-fw fa-bus',
+                ]
+            ],
+        ],
+        [
+            'text' => 'Route',
+            'icon' => 'fas fa-fw fa-road',
+            'submenu' => [
+                [
+                    'text' => 'Journey Route',
+                    'url' => 'admin/journey-routes',
+                    'icon' => 'fas fa-fw fa-map-marked-alt',
+                ],
+                [
+                    'text' => 'Travel Schedules',
+                    'url' => 'admin/vehicles-route-destinations',
+                    'icon' => 'fas fa-fw fa-calendar-check',
+                ]
+            ],
+        ],
+        [
+            'text' => 'Reservation',
+            'url' => 'admin/reservations',
+            'icon' => 'fas fa-fw fa-clipboard-check',
+        ],
+        [
+            'text' => 'Users',
+            'url' => 'admin/manage-users/all',
+            'icon' => 'fas fa-fw fa-users',
         ],
         ['header' => 'account_settings'],
         [
@@ -335,65 +385,65 @@ return [
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-user',
         ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
-        ],
+        // [
+        //     'text' => 'change_password',
+        //     'url' => 'admin/settings',
+        //     'icon' => 'fas fa-fw fa-lock',
+        // ],
+        // [
+        //     'text' => 'multilevel',
+        //     'icon' => 'fas fa-fw fa-share',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'level_one',
+        //             'url' => '#',
+        //         ],
+        //         [
+        //             'text' => 'level_one',
+        //             'url' => '#',
+        //             'submenu' => [
+        //                 [
+        //                     'text' => 'level_two',
+        //                     'url' => '#',
+        //                 ],
+        //                 [
+        //                     'text' => 'level_two',
+        //                     'url' => '#',
+        //                     'submenu' => [
+        //                         [
+        //                             'text' => 'level_three',
+        //                             'url' => '#',
+        //                         ],
+        //                         [
+        //                             'text' => 'level_three',
+        //                             'url' => '#',
+        //                         ],
+        //                     ],
+        //                 ],
+        //             ],
+        //         ],
+        //         [
+        //             'text' => 'level_one',
+        //             'url' => '#',
+        //         ],
+        //     ],
+        // ],
+        // ['header' => 'labels'],
+        // [
+        //     'text' => 'important',
+        //     'icon_color' => 'red',
+        //     'url' => '#',
+        // ],
+        // [
+        //     'text' => 'warning',
+        //     'icon_color' => 'yellow',
+        //     'url' => '#',
+        // ],
+        // [
+        //     'text' => 'information',
+        //     'icon_color' => 'cyan',
+        //     'url' => '#',
+        // ],
     ],
 
     /*
@@ -418,6 +468,10 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
     ],
 
+    'adminlte_css' => [
+        'css/custom.css',
+    ],
+    
     /*
     |--------------------------------------------------------------------------
     | Plugins Initialization
@@ -501,6 +555,16 @@ return [
                 ],
             ],
         ],
+        'BsCustomFileInput' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bs-custom-file-input/bs-custom-file-input.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*
@@ -549,4 +613,50 @@ return [
     */
 
     'livewire' => false,
+
+    'DatatablesPlugins' => [
+        'active' => false,
+        'files' => [
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/buttons/js/dataTables.buttons.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/buttons/js/buttons.bootstrap4.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/buttons/js/buttons.html5.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/buttons/js/buttons.print.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/jszip/jszip.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/pdfmake/pdfmake.min.js',
+            ],
+            [
+                'type' => 'js',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/pdfmake/vfs_fonts.js',
+            ],
+            [
+                'type' => 'css',
+                'asset' => true,
+                'location' => 'vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css',
+            ],
+        ],
+    ],
 ];

@@ -27,7 +27,8 @@ class RouteDestinationController extends Controller
         $routeDestination->updated_at = $current_timestamp;
         $routeDestination->save();
 
-        return response()->json(['message' => 'Journey route created successfully'], 200);
+        // return response()->json(['message' => 'Journey route created successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $validated['route_id']])->with('success', 'Journey route created successfully');
     }
 
     public function update(UpdateRouteDestinationRequest $request, $id) 
@@ -42,10 +43,12 @@ class RouteDestinationController extends Controller
         if ($routeDestination) {
             $routeDestination->update($validated);
 
-            return response()->json(['message' => 'Route destination updated successfully'], 200);
+            // return response()->json(['message' => 'Route destination updated successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('success', 'Route destination updated successfully');
         }
 
-        return response()->json(['message' => 'Route destination not found'], 404);
+        // return response()->json(['message' => 'Route destination not found'], 404);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('error', 'Route destination not found');
     }
 
     public function destroy($id) 
@@ -55,9 +58,11 @@ class RouteDestinationController extends Controller
         if ($routeDestination) {
             $routeDestination->delete();
 
-            return response()->json(['message' => 'Route destination deleted successfully'], 200);
+            // return response()->json(['message' => 'Route destination deleted successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('success', 'Route destination deleted successfully');
         }
         
-        return response()->json(['message' => 'Route destination not found'], 404);
+        // return response()->json(['message' => 'Route destination not found'], 404);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('error', 'Route destination not found');
     }
 }

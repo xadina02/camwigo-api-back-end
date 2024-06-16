@@ -10,6 +10,7 @@
 {{-- Extend and customize the page content header --}}
 
 @section('content_header')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @hasSection('content_header_title')
         <h1 class="text-muted">
             @yield('content_header_title')
@@ -47,29 +48,56 @@
 {{-- Add common Javascript/Jquery code --}}
 
 @push('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/select2.min.js"></script>
+
 <script>
-
     $(document).ready(function() {
-        // Add your common script logic here...
-    });
+        // Initialize Toastr options
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
+        // Display Toastr notifications based on session data
+        @if(session('success'))
+            toastr.success("{{ session('success') }}", "Success");
+        @endif
+
+        @if(session('error'))
+            toastr.error("{{ session('error') }}", "Error");
+        @endif
+
+        @if(session('info'))
+            toastr.info("{{ session('info') }}", "Information");
+        @endif
+
+        @if(session('warning'))
+            toastr.warning("{{ session('warning') }}", "Warning");
+        @endif
+    });
 </script>
+<script src="/js/vehicle-category.js"></script>
 @endpush
 
 {{-- Add common CSS customizations --}}
 
 @push('css')
-<style type="text/css">
+    <link rel="stylesheet" href="/css/app.css">
 
-    {{-- You can add AdminLTE customizations here --}}
-    /*
-    .card-header {
-        border-bottom: none;
-    }
-    .card-title {
-        font-weight: 600;
-    }
-    */
-
-</style>
+    {{-- Toastr CSS --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 @endpush

@@ -1,0 +1,306 @@
+.widget-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping if there are too many widgets */
+}
+
+.widget-container .small-box {
+    margin: 10px; /* Adds spacing around each widget */
+    flex: 1; /* Each widget takes equal width */
+    max-width: calc(25% - 25px); /* Ensure they fit within the container */
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.datatable-title {
+    margin-top: 1%;
+    color: #333;
+    font-weight: bold;
+}
+
+.custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+.ml-2 {
+    margin-left: 0.5rem;
+}
+.mx-1 {
+    margin-right: 0.25rem;
+}
+
+.sidebar .nav-header {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #4b4f56; /* Adds a top border */
+}
+.sidebar .nav-item .nav-treeview .nav-item > .nav-link {
+    padding-left: 30px;
+}
+
+/* You may also want to add styles for nested submenus */
+.sidebar .nav-item .nav-treeview > .nav-item .nav-treeview > .nav-item {
+    padding-left: 40px;
+}
+.custom-logout-button {
+    background-color: #60cd45;
+    /* background-color: #e74c3c; */
+    color: white !important;
+    /* border-color: #60cd45; */
+    /* border-color: #c0392b; */
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.custom-logout-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    border-color: #e74c3c; /* Change border on hover */
+}
+
+.badge-origin,
+.badge-destination {
+    font-size: 0.9em; /* Increase the font size */
+    padding: 0.2em 0.55em; /* Increase padding for larger badges */
+    border-radius: 0.25em; /* Adjust border radius for consistent look */
+    display: inline-block; /* Ensure the badge is displayed inline */
+    margin: 0.1em 0.1em; /* Add some margin to separate multiple badges */
+}
+
+.badge-origin {
+    background-color: #007bff;
+    color: white;
+    padding: 9px;
+    font-size: 110%;
+    border-radius: 15px;
+}
+
+.badge-destination {
+    background-color: orange;
+    color: white;
+    padding: 6px;
+    font-size: 110%;
+    border-radius: 10px;
+}
+
+.badge-money {
+    background-color: green;
+    color: white;
+    padding: 6px;
+    font-size: 110%;
+    border-radius: 10px;
+}
+
+.badge-none {
+    background-color: #f23e29;
+    color: white;
+    padding: 8px;
+    font-size: 110%;
+}
+
+.card {
+    padding: 20px; /* Adjust padding for content */
+    border-radius: 15px; /* Rounded corners */
+    background-color: #f7f7f7; /* Lighter gray background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px; /* Space between cards */
+    border: 1px solid #dcdcdc; /* Light gray border for contrast */
+    color: #333333; /* Dark text color for readability */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.card2 {
+    padding: 40px; /* Adjust padding for content */
+    border-radius: 15px; /* Rounded corners */
+    background-color: #f7f7f7; /* Lighter gray background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px; /* Space between cards */
+    border: 1px solid #dcdcdc; /* Light gray border for contrast */
+    color: #333333; /* Dark text color for readability */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift card on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More prominent shadow on hover */
+}
+
+.card-header {
+    background-color: #e0e0e0; /* Light gray for header */
+    border-radius: 15px 15px 0 0; /* Rounded corners at the top */
+    padding: 10px 20px; /* Padding for header content */
+    font-size: 1.2em; /* Larger font for header */
+    color: #444444; /* Darker text color */
+    border-bottom: 1px solid #dcdcdc; /* Light border for header separation */
+}
+
+.card-body {
+    padding: 20px; /* Consistent padding for body */
+}
+
+.card-body h6 {
+    font-size: 1.1em; /* Slightly larger font for headings */
+    color: #555555; /* Darker color for subheadings */
+}
+
+.table {
+    background-color: #ffffff;
+    color: #333333;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table th {
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
+.table tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+.btn {
+    border-radius: 5px;
+}
+
+.btn-primary, .btn-warning, .btn-danger {
+    margin-right: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #007bff;
+}
+
+.btn-warning:hover {
+    background-color: #ffc107; 
+}
+
+.btn-danger:hover {
+    background-color: #dc3545;
+}
+
+/* Adjust modal header styles */
+.modal-header {
+    background-color: #e0e0e0; /* Consistent light header background */
+    border-bottom: 1px solid #dcdcdc; /* Border for header separation */
+    color: #444444; /* Dark text color */
+    border-top-left-radius: 15px; /* Rounded corners */
+    border-top-right-radius: 15px; /* Rounded corners */
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.form-control {
+    margin-bottom: 1rem;
+}
+
+.category-icon {
+    width: 240px; /* Larger icon width */
+    height: 240px; /* Larger icon height */
+    border-radius: 50%; /* Ensures a circular shape */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow effect */
+}
+.vehicle-info {
+    background-color: #f8f9fa; /* Light background color */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow effect */
+    margin-top: 20px; /* Increase top margin */
+}
+.vehicle-info h3 {
+    font-size: 28px; /* Larger font size for vehicle name */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.vehicle-info p {
+    font-size: 18px; /* Larger font size for details */
+    margin-bottom: 5px;
+}
+
+.pagination-controls {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+.pagination-controls a {
+    margin-left: 5px;
+    color: #007bff;
+    text-decoration: none;
+}
+.pagination-controls a:hover {
+    text-decoration: underline;
+}
+
+/* Flexbox for card-header */
+.card-header2 {
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap; 
+    border-radius: 15px 15px 0 0; /* Rounded corners at the top */
+    padding: 10px 20px; /* Padding for header content */
+    font-size: 1.2em; /* Larger font for header */
+    color: #444444; /* Darker text color */
+    border-bottom: 1px solid #dcdcdc; /* Light border for header separation */
+}
+
+/* Optional: Adjust the spacing as needed */
+.route-info {
+    flex-grow: 1; /* Allows the route-info to take up available space */
+}
+
+.delete-form {
+    margin-left: auto; /* Pushes the form to the far right */
+    display: flex;
+    align-items: center;
+}
+
+/* Ensures the button is vertically aligned */
+.delete-form button {
+    display: inline-block;
+}
+
+/* Highlight the active page link */
+.pagination-controls .page-link.active {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text for better contrast */
+    border-radius: 4px; /* Optional: rounded corners */
+    padding: 5px 10px; /* Optional: add some padding */
+    text-decoration: none; /* Remove underline */
+}
+
+.pagination-controls .page-link {
+    margin: 0 5px; /* Add some space between page links */
+    cursor: pointer; /* Make it look clickable */
+}
+

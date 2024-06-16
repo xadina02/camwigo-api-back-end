@@ -32,15 +32,19 @@ class RouteScheduleController extends Controller
             $routeSchedule->updated_at = $current_timestamp;
             $routeSchedule->save();
 
-            return response()->json(['message' => 'Route schedule set successfully'], 200);
+            // return response()->json(['message' => 'Route schedule set successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('success', 'Route schedule set successfully');
         }
 
-        return response()->json(['message' => 'The route destination does not exist'], 404);
+        // return response()->json(['message' => 'The route destination does not exist'], 404);
+        return redirect()->route('journey-routes.show', ['journey_route' => $routeDestination->route->id])->with('error', 'The route destination does not exist');
     }
 
     public function update(UpdateRouteScheduleRequest $request, $id) 
     {
+        logger("Edit Schedule Request ", $request->all());
         $validated = $request->validated();
+        logger("Edit Schedule Validated fields ", $validated);
 
         $current_timestamp = Carbon::now();
         $validated['updated_at'] = $current_timestamp;
@@ -48,12 +52,18 @@ class RouteScheduleController extends Controller
         $routeSchedule = RouteSchedule::find($id);
 
         if ($routeSchedule) {
+            logger("Route Schedule found ");
+            logger("Updating... ");
             $routeSchedule->update($validated);
+            logger("DONE! ");
 
-            return response()->json(['message' => 'Route schedule updated successfully'], 200);
+            // return response()->json(['message' => 'Route schedule updated successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeSchedule->routeDestination->route->id])->with('success', 'Route schedule updated successfully');
         }
+        logger("Route Schedule NOT found ");
 
-        return response()->json(['message' => 'Route schedule not found'], 404);
+        // return response()->json(['message' => 'Route schedule not found'], 404);
+        return redirect()->route('journey-routes.show', ['journey_route' => $routeSchedule->routeDestination->route->id])->with('error', 'Route schedule not found');
     }
 
     public function destroy($id) 
@@ -63,9 +73,11 @@ class RouteScheduleController extends Controller
         if ($routeSchedule) {
             $routeSchedule->delete();
 
-            return response()->json(['message' => 'Route schedule deleted successfully'], 200);
+            // return response()->json(['message' => 'Route schedule deleted successfully'], 200);
+            return redirect()->route('journey-routes.show', ['journey_route' => $routeSchedule->routeDestination->route->id])->with('success', 'Route schedule deleted successfully');
         }
         
-        return response()->json(['message' => 'Route schedule not found'], 404);
+        // return response()->json(['message' => 'Route schedule not found'], 404);
+        return redirect()->route('journey-routes.show', ['journey_route' => $routeSchedule->routeDestination->route->id])->with('error', 'Route schedule not found');
     }
 }

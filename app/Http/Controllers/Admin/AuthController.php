@@ -42,14 +42,14 @@ class AuthController extends Controller
             $token = $request->user()->currentAccessToken();
             
             if ($token) {
-                // $token->delete();
+                $token->delete();
                 auth('web')->logout();
             } else {
                 return response()->json(["message" => "Token not found"], 404);
             }
         }
 
-        // return response()->json(["message" => "logged out"], 200);
-        return redirect()->route('login', ['version'=>'v1', 'lang'=>'en']);
+        return response()->json(["message" => "logged out"], 200);
+        // return redirect()->route('login', ['version'=>'v1', 'lang'=>'en']);
     }
 }

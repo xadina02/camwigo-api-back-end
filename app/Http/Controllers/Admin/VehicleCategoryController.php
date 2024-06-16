@@ -14,9 +14,9 @@ class VehicleCategoryController extends Controller
 {
     public function index(Request $request) 
     {
-        $allVehicleCategories = VehicleCategory::all();
+        $allVehicleCategories = VehicleCategory::orderBy('created_at', 'asc')->get();
 
-        return response()->json(['vehicle categories' => $allVehicleCategories], 200);
+        return view('admin.vehicle-category', compact('allVehicleCategories'));
     }
 
     public function store(VehicleCategoryRequest $request) 
@@ -36,19 +36,11 @@ class VehicleCategoryController extends Controller
         $vehicleCategory->updated_at = $current_timestamp;
         $vehicleCategory->save();
 
-        return response()->json(['message' => 'Vehicle category created successfully'], 200);
-    }
-
-    public function show($id) 
-    {
-        $vehicleCategory = VehicleCategory::find($id);
-
-        return response()->json(['vehicle category' => $vehicleCategory], 200);
+        return redirect()->route('vehicle-categories.index')->with('success', 'Vehicle category created successfully.');
     }
 
     public function update(VehicleCategoryRequest $request, $id) 
     {
-        logger("DATA:", ["Raw Input" => $request->all(), "Request name" => [$request->input('name')], "Request size" => [$request->input('size')], "Request image" => [$request->file('image')]]);
         $validated = $request->validated();
 
         $validated['updated_at'] = Carbon::now();
@@ -58,16 +50,15 @@ class VehicleCategoryController extends Controller
         if ($vehicleCategory) {
             logger("Category to update:", [$vehicleCategory->name]);
             if ($request->hasFile('image')) {
-                logger("File present in request?", [true]);
                 ImageHelper::handleImageDelete($vehicleCategory->icon_link);
                 $validated['icon_link'] = $this->handleImageUpload($request);
             }
 
             $vehicleCategory->update($validated);
-            return response()->json(['message' => 'Vehicle category updated successfully'], 200);
+            return redirect()->route('vehicle-categories.index')->with('success', 'Vehicle category updated successfully');
         }
 
-        return response()->json(['message' => 'Vehicle category not found'], 404);
+        return redirect()->route('vehicle-categories.index')->with('error', 'Vehicle category not found');
     }
 
     public function destroy($id) 
@@ -79,10 +70,10 @@ class VehicleCategoryController extends Controller
             // $this->handleImageDelete($vehicleCategory->icon_link);
             $vehicleCategory->delete();
 
-            return response()->json(['message' => 'Vehicle category deleted successfully'], 200);
+            return redirect()->route('vehicle-categories.index')->with('success', 'Vehicle category deleted successfully');
         }
         
-        return response()->json(['message' => 'Vehicle category not found'], 404);
+        return redirect()->route('vehicle-categories.index')->with('error', 'Vehicle category not found');
     }
 
     public function handleImageUpload(VehicleCategoryRequest $request)
