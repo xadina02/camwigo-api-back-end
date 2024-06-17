@@ -14,13 +14,11 @@ class UserController extends Controller
 {
     public function index(Request $request) 
     {
-        $users = User::whereDoesntHave('roles', function($query) {
+        $allUsers = User::whereDoesntHave('roles', function($query) {
             $query->where('name', 'admin');
         })->get();
         
-        // return data with a view
-        // return response()->json(['users' => $users], 200);
-        return view('admin.user', compact('users'));
+        return view('admin.user', compact('allUsers'));
     }
 
     public function show($id) 
@@ -28,7 +26,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         // return data with a view
-        return response()->json(['user' => $user], 200);
+        return view('admin.user-details', compact('user'));
     }
 
     /**
@@ -79,7 +77,7 @@ class UserController extends Controller
             $user->assignRole($role);
             $user->save();
             
-            return response()->json(['message' => 'User registered successfully'], 200);
+            return redirect()->back()->with('success', 'User registered successfully');
         }
 
         if(!$user->hasRole($role))
@@ -87,7 +85,7 @@ class UserController extends Controller
             $user->assignRole($role);
         }
 
-        return response()->json(['message' => 'The user already exists'], 401);
+        return redirect()->back()->with('error', 'The user already exists');
     }
 
     /**
@@ -95,7 +93,9 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, $id)
     {
+        logger('In user update method', $request->all());
         $validated = $request->validated();
+        logger('In user update method', $validated);
 
         $current_timestamp = Carbon::now();
         $validated['updated_at'] = $current_timestamp;
@@ -104,12 +104,14 @@ class UserController extends Controller
 
         if($user) 
         {
+            logger('User found');
             $user->update($validated);
+            logger('Details updated successfully');
 
-            return response()->json(['message' => 'User details updated successfully'], 200);
+            return redirect()->back()->with('success', 'User details updated successfully');
         }
 
-        return response()->json(['message' => 'User not found'], 404);
+        return redirect()->back()->with('error', 'User Not Found');
     }
 
     public function destroy($id) 
@@ -119,8 +121,8 @@ class UserController extends Controller
         if($user) 
         {
             $user->delete();
-            return response()->json(["message" => "Account has been deleted"], 200);
+            return redirect()->back()->with('success', 'Account has been deleted');
         }
-        return response()->json(["message" => "Account was not found"], 404);
+        return redirect()->back()->with('error', 'Account was not found');
     }
 }

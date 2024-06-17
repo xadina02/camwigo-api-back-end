@@ -309,3 +309,21 @@
 .status-blocked { background-color: red; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
 .status-partial { background-color: yellow; color: black; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
 .status-paid { background-color: gray; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.info-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.info-value {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+p .info-value {
+    font-weight: larger;
+}

@@ -76,8 +76,8 @@ class ReservationController extends Controller
                 $reservation->vehicleRouteDestination->routeSchedule->routeDestination->route->origin,
                 $reservation->vehicleRouteDestination->routeSchedule->routeDestination->destination,
                 \Carbon\Carbon::parse($reservation->vehicleRouteDestination->routeSchedule->departure_time)->format('h:i A'),
-                $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price, // Assuming a price attribute
-                $reservation->amount_paid,
+                $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price . ' XAF',
+                $reservation->amount_paid . ' XAF',
                 $reservation->position,
                 \Carbon\Carbon::parse($reservation->vehicleRouteDestination->journey_date)->format('d M Y'),
                 $reservation->status,
@@ -147,6 +147,15 @@ class ReservationController extends Controller
         $reservation = Reservation::find($id);
 
         return view('admin.reservation-detail', compact('reservation'));
+    }
+
+    public function blockReservation(Request $request, $id) 
+    {
+        $reservation = Reservation::find($id);
+        $reservation->status = 'blocked';
+        $reservation->save();
+
+        return redirect()->back()->with('success', 'The reservation has been blocked');
     }
 
     public function update(UpdateReservationRequest $request, $id) 

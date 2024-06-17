@@ -44,12 +44,15 @@ Route::prefix('admin')->group(function () {
             Route::delete('vehicles-route-destinations/remove/{id}', 'removeRouteFromVehicle');
         });
         Route::resource('reservations', ReservationController::class);
+        Route::controller(ReservationController::class)->group(function () {
+            Route::post('reservations/{id}', 'blockReservation')->name('blockReservation');
+        });
         Route::resource('tickets', TicketController::class);
         Route::controller(UserController::class)->prefix('manage-users')->group(function () {
             Route::get('/all', 'index');
-            Route::get('/user/{id}', 'show');
-            Route::post('/register', 'register');
-            Route::put('/update/profile/{id}', 'update');
+            Route::get('/user/{id}', 'show')->name('showUser');
+            Route::post('/register', 'register')->name('createUser');
+            Route::patch('/update/profile/{id}', 'update');
             Route::post('/account/delete/{id}', 'destroy');
         });
         Route::controller(PaymentController::class)->group(function () {
