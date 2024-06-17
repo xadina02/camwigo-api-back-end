@@ -81,7 +81,7 @@ class ReservationController extends Controller
                 $reservation->position,
                 \Carbon\Carbon::parse($reservation->vehicleRouteDestination->journey_date)->format('d M Y'),
                 $reservation->status,
-                '<nobr>' . '<button type="button" class="btn btn-danger delete-button" data-id="' . $reservation->id . '" data-url="' . route('reservations.destroy', $reservation->id) . '">Delete</button>' . '</nobr>',
+                '<nobr>' . '<a href="' . route('reservations.show', $reservation->id) . '" class="btn btn-info view-button" data-id="' . $reservation->id . '">View</a>' . ' ' . '<button type="button" class="btn btn-danger delete-button" data-id="' . $reservation->id . '" data-url="' . route('reservations.destroy', $reservation->id) . '">Delete</button>' . '</nobr>',
             ];
         });
 

@@ -79,6 +79,7 @@
             $journeyDate = \Carbon\Carbon::parse($reservation->vehicleRouteDestination->journey_date)->format('d M Y');
             $status = $reservation->status;
             $btnDelete = '<button type="button" class="btn btn-danger delete-button" data-id="' . $reservation->id . '" data-url="' . route('reservations.destroy', $reservation->id) . '">Delete</button>';
+            $btnView = '<a href="' . route('reservations.show', $reservation->id) . '" class="btn btn-info view-button" data-id="' . $reservation->id . '">View</a>';
 
             // Determine status class and label
             $statusClass = '';
@@ -116,13 +117,13 @@
                 $position,
                 $journeyDate,
                 $formattedStatus,
-                '<nobr>' . $btnDelete . '</nobr>',
+                '<nobr>' . $btnView . ' ' . $btnDelete . '</nobr>',
             ];
         }
 
         $config = [
             'data' => $data,
-            'columns' => [null, null, null, null, null, null, null, null, null, ['orderable' => false], ['orderable' => false]],
+            'columns' => [null, null, null, null, null, null, null, null, null, ['orderable' => false], ['orderable' => true]],
         ];
     @endphp
 
@@ -220,8 +221,45 @@
 
             function updateTable(data) {
                 var table = $('#reservationsTable').DataTable();
-                table.clear();
-                table.rows.add(data);
+                table.clear(); // Clear existing data from DataTable
+                
+                $.each(data, function(index, row) {
+                    // Capitalize the status string
+                    var status = row[9].charAt(0).toUpperCase() + row[9].slice(1); // Assuming row[9] is the status string
+                    
+                    // Determine status class based on status value
+                    var statusClass = '';
+                    switch (row[9]) {
+                        case 'completed':
+                            statusClass = 'status-completed';
+                            break;
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            break;
+                        case 'blocked':
+                            statusClass = 'status-blocked';
+                            break;
+                        case 'partial':
+                            statusClass = 'status-partial';
+                            break;
+                        case 'paid':
+                            statusClass = 'status-paid';
+                            break;
+                        default:
+                            statusClass = '';
+                    }
+
+                    // Format status with div for styling
+                    var formattedStatus = '<div class="' + statusClass + '">' + status + '</div>';
+                    
+                    // Update the status column in the row
+                    row[9] = formattedStatus;
+
+                    // Add the modified row to DataTable
+                    table.row.add(row);
+                });
+                
+                // Redraw the DataTable with updated data
                 table.draw();
             }
         });
