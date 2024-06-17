@@ -303,3 +303,9 @@
     margin: 0 5px; /* Add some space between page links */
     cursor: pointer; /* Make it look clickable */
 }
+
+.status-completed { background-color: green; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
+.status-pending { background-color: blue; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
+.status-blocked { background-color: red; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
+.status-partial { background-color: yellow; color: black; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }
+.status-paid { background-color: gray; color: white; padding: 5px; border-radius: 10px; text-align: center; font-weight: bold; }

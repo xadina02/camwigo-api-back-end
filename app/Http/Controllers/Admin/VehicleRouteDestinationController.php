@@ -147,10 +147,10 @@ class VehicleRouteDestinationController extends Controller
             $vehicleRouteDestination->delete();
 
             // return response()->json(['message' => 'Vehicle journey deleted successfully'], 200);
-            return redirect()->route('vehicles.show', $vehicleRouteDestination->vehicle->id)->with('success', 'Vehicle journey deleted successfully');
+            return redirect()->back()->with('success', 'Vehicle journey deleted successfully');
         }
         
         // return response()->json(['message' => 'Vehicle journey not found'], 404);
-        return redirect()->route('vehicles.show', $vehicleRouteDestination->vehicle->id)->with('error', 'Vehicle journey not found');
+        return redirect()->back()->with('error', 'Vehicle journey not found');
     }
 }

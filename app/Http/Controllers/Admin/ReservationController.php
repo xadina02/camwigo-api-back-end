@@ -17,10 +17,80 @@ class ReservationController extends Controller
 {
     public function index(Request $request) 
     {
-        $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route'];
-        $allReservations = Reservation::with($relationships)->get();
+        // Start with base query
+        $query = Reservation::with([
+            'user', 
+            'vehicleRouteDestination.vehicle', 
+            'vehicleRouteDestination.routeSchedule.routeDestination.route'
+        ])->with('vehicleRouteDestination.routeSchedule.routeDestination');
 
-        // return response()->json(['reservations' => $allReservations], 200);
+        // Apply filters based on request parameters
+        if ($request->filled('user_name')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->whereRaw('LOWER(CONCAT(first_name, " ", last_name)) LIKE ?', ['%' . strtolower($request->user_name) . '%']);
+            });
+        }
+
+        if ($request->filled('vehicle_name')) {
+            $query->whereHas('vehicleRouteDestination.vehicle', function($q) use ($request) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->vehicle_name) . '%']);
+            });
+        }
+
+        if ($request->filled('route_origin')) {
+            $query->whereHas('vehicleRouteDestination.routeSchedule.routeDestination.route', function($q) use ($request) {
+                $q->whereRaw('LOWER(origin) LIKE ?', ['%' . strtolower($request->route_origin) . '%']);
+            });
+        }
+
+        if ($request->filled('route_destination')) {
+            $query->whereHas('vehicleRouteDestination.routeSchedule.routeDestination', function($q) use ($request) {
+                $q->whereRaw('LOWER(destination) LIKE ?', ['%' . strtolower($request->route_destination) . '%']);
+            });
+        }
+
+        if ($request->filled('schedule_time')) {
+            $query->whereHas('vehicleRouteDestination.routeSchedule', function($q) use ($request) {
+                $q->whereTime('departure_time', $request->schedule_time);
+            });
+        }
+
+        if ($request->filled('reservation_status')) {
+            $query->where('status', $request->reservation_status);
+        }
+
+        if ($request->filled('journey_date')) {
+            $query->whereHas('vehicleRouteDestination', function($q) use ($request) {
+                $q->whereDate('journey_date', $request->journey_date);
+            });
+        }
+
+        // Retrieve filtered reservations
+        $allReservations = $query->get();
+
+        // Prepare data for DataTable
+        $data = $allReservations->map(function($reservation) {
+            return [
+                $reservation->user->first_name . ' ' . $reservation->user->last_name,
+                $reservation->vehicleRouteDestination->vehicle->name,
+                $reservation->vehicleRouteDestination->routeSchedule->routeDestination->route->origin,
+                $reservation->vehicleRouteDestination->routeSchedule->routeDestination->destination,
+                \Carbon\Carbon::parse($reservation->vehicleRouteDestination->routeSchedule->departure_time)->format('h:i A'),
+                $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price, // Assuming a price attribute
+                $reservation->amount_paid,
+                $reservation->position,
+                \Carbon\Carbon::parse($reservation->vehicleRouteDestination->journey_date)->format('d M Y'),
+                $reservation->status,
+                '<nobr>' . '<button type="button" class="btn btn-danger delete-button" data-id="' . $reservation->id . '" data-url="' . route('reservations.destroy', $reservation->id) . '">Delete</button>' . '</nobr>',
+            ];
+        });
+
+        // Return JSON response for AJAX requests
+        if ($request->ajax()) {
+            return response()->json(['data' => $data]);
+        }
+
+        // Handle non-AJAX request by returning view with all reservations
         return view('admin.reservation', compact('allReservations'));
     }
 
@@ -54,30 +124,29 @@ class ReservationController extends Controller
                         
                         DB::commit();
 
-                        return response()->json(['message' => 'Reservation created successfully'], 200);
+                        return redirect()->back()->with('success', 'Reservation created successfully');
                     } 
                     catch (\Exception $e) 
                     {
                         DB::rollBack();
-                        return response()->json(['message' => 'Failed to create reservation'], 500);
+                        return redirect()->back()->with('error', 'Failed to create reservation');
                     }
                 }
 
-                return response()->json(['message' => 'No available seats or all seats are reserved'], 400);
+                return redirect()->back()->with('error', 'No available seats');
             }
 
-            return response()->json(['message' => 'The vehicle journey not exist'], 404);
+            return redirect()->back()->with('error', 'The vehicle journey not exist');
         }
 
-        return response()->json(['message' => 'The user does not exist'], 404);
+        return redirect()->back()->with('error', 'The user does not exist');
     }
 
     public function show($id) 
     {
-        $relationships = ['user', 'vehicleRouteDestination.vehicle.vehicleCategory', 'vehicleRouteDestination.routeSchedule.routeDestination.route', 'ticket'];
-        $reservation = Reservation::with($relationships)->find($id);
+        $reservation = Reservation::find($id);
 
-        return response()->json(['reservation' => $reservation], 200);
+        return view('admin.reservation-detail', compact('reservation'));
     }
 
     public function update(UpdateReservationRequest $request, $id) 
@@ -92,10 +161,10 @@ class ReservationController extends Controller
         if ($reservation) {
             $reservation->update($validated);
 
-            return response()->json(['message' => 'Reservation details updated successfully'], 200);
+            return redirect()->back()->with('success', 'Reservation details updated successfully');
         }
 
-        return response()->json(['message' => 'Reservation not found'], 404);
+        return redirect()->back()->with('error', 'Reservation not found');
     }
 
     public function destroy($id) 
@@ -105,9 +174,9 @@ class ReservationController extends Controller
         if ($reservation) {
             $reservation->delete();
 
-            return response()->json(['message' => 'Reservation deleted successfully'], 200);
+            return redirect()->back()->with('success', 'Reservation deleted successfully');
         }
         
-        return response()->json(['message' => 'Reservation not found'], 404);
+        return redirect()->back()->with('error', 'Reservation not found');
     }
 }
