@@ -39,7 +39,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('route-schedules', RouteScheduleController::class);
         Route::resource('vehicles-route-destinations', VehicleRouteDestinationController::class);
         Route::controller(VehicleRouteDestinationController::class)->group(function () {
-            Route::get('vehicles-route-destinations', 'showAllJourneySchedules');
+            Route::get('travel-journeys', 'showAllJourneySchedules')->name('travelJourneys');
             Route::post('vehicles-route-destinations/attribute/{id}', 'attributeRouteToVehicle')->name('attributeRouteToVehicle');
             Route::delete('vehicles-route-destinations/remove/{id}', 'removeRouteFromVehicle');
         });

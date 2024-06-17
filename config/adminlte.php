@@ -363,8 +363,8 @@ return [
                     'icon' => 'fas fa-fw fa-map-marked-alt',
                 ],
                 [
-                    'text' => 'Travel Schedules',
-                    'url' => 'admin/vehicles-route-destinations',
+                    'text' => 'Travel Journeys',
+                    'url' => 'admin/travel-journeys',
                     'icon' => 'fas fa-fw fa-calendar-check',
                 ]
             ],

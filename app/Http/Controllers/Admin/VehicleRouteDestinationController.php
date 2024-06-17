@@ -15,7 +15,65 @@ class VehicleRouteDestinationController extends Controller
 {
     public function showAllJourneySchedules(Request $request) 
     {
-        //
+        $query = VehicleRouteDestination::query();
+
+        if ($request->filled('vehicle_name')) {
+            $query->whereHas('vehicle', function($q) use ($request) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($request->vehicle_name) . '%']);
+            });
+        }
+    
+        if ($request->filled('route_origin')) {
+            $query->whereHas('routeSchedule.routeDestination.route', function($q) use ($request) {
+                $q->whereRaw('LOWER(origin) LIKE ?', ['%' . strtolower($request->route_origin) . '%']);
+            });
+        }
+    
+        if ($request->filled('route_destination')) {
+            $query->whereHas('routeSchedule.routeDestination', function($q) use ($request) {
+                $q->whereRaw('LOWER(destination) LIKE ?', ['%' . strtolower($request->route_destination) . '%']);
+            });
+        }
+    
+        if ($request->filled('route_schedule_label')) {
+            $query->whereHas('routeSchedule', function($q) use ($request) {
+                $q->whereRaw('LOWER(label) LIKE ?', ['%' . strtolower($request->route_schedule_label) . '%']);
+            });
+        }
+
+        if ($request->filled('route_schedule_time')) {
+            $query->whereHas('routeSchedule', function($q) use ($request) {
+                $q->whereTime('departure_time', $request->route_schedule_time);
+            });
+        }
+
+        if ($request->filled('journey_date')) {
+            $query->whereDate('journey_date', $request->journey_date);
+        }
+
+        $travelJourneys = $query->get();
+
+        // Format data for DataTable
+        $data = $travelJourneys->map(function($journey) {
+            return [
+                $journey->vehicle->name,
+                $journey->vehicle->vehicleCategory->name,
+                $journey->routeSchedule->routeDestination->route->origin,
+                $journey->routeSchedule->routeDestination->destination,
+                $journey->routeSchedule->label,
+                \Carbon\Carbon::parse($journey->routeSchedule->departure_time)->format('h:i A'),
+                $journey->available_seats,
+                $journey->reservations->count(),
+                \Carbon\Carbon::parse($journey->journey_date)->format('d M Y'),
+                '<button type="button" class="btn btn-danger delete-button" data-id="' . $journey->id . '" data-url="' . route('vehicles-route-destinations.destroy', $journey->id) . '">Delete</button>'
+            ];
+        });
+
+        if ($request->ajax()) {
+            return response()->json(['data' => $data]);
+        }
+
+        return view('admin.travel-journey', compact('travelJourneys'));
     }
 
     public function show(Request $request, $id) 
