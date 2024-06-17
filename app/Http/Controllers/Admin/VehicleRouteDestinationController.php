@@ -25,9 +25,7 @@ class VehicleRouteDestinationController extends Controller
 
     public function attributeRouteToVehicle(VehicleRouteRequest $request, $id) 
     {
-        logger("In the route attribution method ", [$request->all()]);
         $validated = $request->validated();
-        logger("Validated fields ", $validated);
 
         $current_timestamp = Carbon::now();
         $error = null;
@@ -36,24 +34,16 @@ class VehicleRouteDestinationController extends Controller
         $vehicle = Vehicle::find($id);
 
         if($routeDestination) {
-            logger("The route destination exists", [$routeDestination]);
-
             if($vehicle) {
-            logger("The vehicle exists", []);
-            
                 foreach($routeDestination->routeSchedules as $routeSchedule) {
-                    logger("Going over each schedule for that journey", []);
-
                     foreach($validated['dates'] as $date) {
                         $vehicleRouteDestination = VehicleRouteDestination::where('vehicle_id', $id)->where('route_schedule_id', $routeSchedule->id)->where('journey_date', $date)->first();
                         if($vehicleRouteDestination) {
-                            logger("The schedule of id " . $routeSchedule->id . " already has a record on this model for that vehicle!!", []);
                             $error[] = "A travel journey already exists for the '" . $routeSchedule->label . "' schedule of this journey route for the day " . $date;
                             // return redirect()->route('vehicles.show', $id)->with('error', 'Journey route already set');
                             break;
                         } 
                         else {
-                            logger("Creating a record on this model for this vehicle, for the schedule of id" . $routeSchedule->id, []);
                             $vehicleRouteDest = new VehicleRouteDestination();
                             $vehicleRouteDest->vehicle_id = $id;
                             $vehicleRouteDest->route_schedule_id = $routeSchedule->id;
@@ -90,21 +80,6 @@ class VehicleRouteDestinationController extends Controller
         // return response()->json(['message' => 'Journey route not found'], 404);
         return redirect()->route('vehicles.show', $id)->with('error', 'Journey route not found');
     }
-
-    // public function removeRouteFromVehicle($id) 
-    // {
-    //     $vehicleRouteDest = VehicleRouteDestination::find($id);
-
-    //     if ($vehicleRouteDest) {
-    //         $vehicleRouteDest->delete();
-
-    //         // return response()->json(['message' => 'Vehicle journey deleted successfully'], 200);
-    //         return redirect()->route('vehicles.show', $id)->with('success', 'Vehicle journey deleted successfully');
-    //     }
-        
-    //     // return response()->json(['message' => 'Vehicle journey not found'], 404);
-    //     return redirect()->route('vehicles.show', $id)->with('error', 'Vehicle journey not found');
-    // }
 
     public function destroy($id) 
     {

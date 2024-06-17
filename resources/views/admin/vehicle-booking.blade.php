@@ -129,10 +129,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="travel_dates">Travel Dates</label>
                             <input type="text" name="dates[]" id="travel_dates" class="form-control">
+                        </div> --}}
+                        <div class="form-group">
+                            <label for="travel_dates">Travel Dates</label>
+                            <input type="text" id="travel_dates" class="form-control" required>
                         </div>
+                        <div id="date-inputs-container"></div>
                         {{-- <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}"> --}}
                     </div>
                     <div class="modal-footer">
@@ -179,13 +184,25 @@
         $(document).ready(function() {
             $('#travel_dates').datepicker({
                 format: 'yyyy-mm-dd',
-                autoclose: false,
                 multidate: true,
-                multidateSeparator: ', ',
+                multidateSeparator: ',',
                 startDate: 'today',
-                endDate: '+1m',
-                daysOfWeekDisabled: '',
                 todayHighlight: true
+            }).on('changeDate', function(e) {
+                var datesString = $('#travel_dates').val();
+                var datesArray = datesString.split(',').map(function(date) {
+                    return date.trim();
+                });
+
+                $('#date-inputs-container').empty();
+                datesArray.forEach(function(date) {
+                    $('#date-inputs-container').append('<input type="hidden" name="dates[]" value="' + date + '">');
+                });
+            });
+
+            $('#routeForm').submit(function(e) {
+                e.preventDefault();
+                this.submit();
             });
 
             // Pagination logic for tables
