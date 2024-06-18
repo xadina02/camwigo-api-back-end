@@ -183,7 +183,7 @@
                         </div>
                         <div class="form-group">
                             <label for="NIN">NIN</label>
-                            <input type="text" class="form-control" id="NIN" name="NIN">
+                            <input type="text" class="form-control" id="nin" name="NIN">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -246,7 +246,7 @@
                 $('#editUserForm #last_name').val(lastName);
                 $('#editUserForm #email').val(email);
                 $('#editUserForm #phone').val(phone);
-                $('#editUserForm #NIN').val(nin);
+                $('#editUserForm #nin').val(nin);
                 $('#editUserForm').attr('action', action);
             });
 
@@ -259,7 +259,7 @@
                 form.find('input').each(function() {
                     var input = $(this);
                     var name = input.attr('name');
-                    var value = input.val();
+                    var value = input.val().trim();
 
                     
                     // WHY IS NIN not forgotten?

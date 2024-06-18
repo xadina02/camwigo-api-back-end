@@ -119,7 +119,6 @@
     striped hoverable bordered compressed/>
     <br>
     <hr>
-    <br>
     <h3 class="datatable-title">Users</h3>
     <x-adminlte-datatable id="table2" :heads="$heads2" head-theme="light" :config="$config2"
     striped hoverable bordered compressed/>

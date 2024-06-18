@@ -44,7 +44,7 @@
                         </a>';
             
             $destinations = [];
-            $origin = '<span class="badge badge-origin">None</span>';
+            $origin = '<span class="badge badge-none">None</span>';
             
             $origin = '<span class="badge badge-origin">' . $route->origin . '</span>';
             foreach($route->routeDestinations as $routeDest) {
@@ -56,7 +56,7 @@
             $data[] = [
                 $route->id,
                 $origin,
-                $destinationsString ?: '<span class="badge badge-destination">None</span>',
+                $destinationsString ?: '<span class="badge badge-none">None</span>',
                 '<nobr>' . $btnDelete . $btnDetails . '</nobr>'
             ];
         }

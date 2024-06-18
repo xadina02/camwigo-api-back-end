@@ -101,6 +101,7 @@
     color: white;
     padding: 8px;
     font-size: 110%;
+    border-radius: 10px;
 }
 
 .card {
