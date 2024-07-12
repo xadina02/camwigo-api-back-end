@@ -14,7 +14,7 @@ class VehicleRouteDestinationController extends Controller
 {
     public function getAllScheduleJourneyDates(Request $request, $id) 
     {
-        $allScheduleDates = VehicleRouteDestination::where('route_schedule_id', $id)->select('id', 'journey_date')->orderBy('vehicle_route_destinations.date', 'asc')->get();
+        $allScheduleDates = VehicleRouteDestination::where('route_schedule_id', $id)->select('id', 'journey_date')->orderBy('journey_date', 'asc')->get()->unique('journey_date');
 
         if($allScheduleDates->isEmpty())
         {
@@ -28,7 +28,7 @@ class VehicleRouteDestinationController extends Controller
     {
         $scheduleID = $request->input('route_schedule');
         $date = $request->input('journey_date');
-        $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination'];
+        $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination.route'];
         $allScheduleJourneys = VehicleRouteDestination::with($relationships)->where('route_schedule_id', $scheduleID)->where('journey_date', 'LIKE', "%{$date}%")->orderBy('vehicle_route_destinations.available_seats', 'asc')->get();
 
         if($allScheduleJourneys->isEmpty())

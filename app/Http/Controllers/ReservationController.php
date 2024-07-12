@@ -14,12 +14,14 @@ use App\Http\Requests\UpdateReservationRequest;
 
 class ReservationController extends Controller
 {
-    public function store(Request $request, $userId, $reservationId) 
+    public function store(Request $request, $vehicleRouteDestinationId) 
     {
         $current_timestamp = Carbon::now();
 
+        $userId = auth('sanctum')->user()->id;
         $user = User::find($userId);
-        $vehicleRouteDestination = VehicleRouteDestination::find($reservationId);
+
+        $vehicleRouteDestination = VehicleRouteDestination::find($vehicleRouteDestinationId);
 
         if($user) {
             if($vehicleRouteDestination) {
@@ -29,7 +31,7 @@ class ReservationController extends Controller
                     try {
                         $reservation = new Reservation();
                         $reservation->user_id = $userId;
-                        $reservation->vehicle_route_destination_id = $reservationId;
+                        $reservation->vehicle_route_destination_id = $vehicleRouteDestinationId;
                         $reservation->position = $request->get('position');
                         $reservation->status = "pending";
                         $reservation->created_at = $current_timestamp;

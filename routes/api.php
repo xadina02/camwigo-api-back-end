@@ -24,7 +24,7 @@ use App\Http\Controllers\AuthenticationController;
 
 Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(function () {
     Route::prefix('users')->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
+        // Route::middleware('auth:sanctum')->group(function () {
             Route::controller(RouteController::class)->group(function () {
                 Route::get('routes/all', 'getAllRoutes');
                 Route::get('routes/search', 'searchRoutes');
@@ -44,7 +44,7 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
             });
 
             Route::controller(ReservationController::class)->group(function () {
-                Route::post('reservation/{user_id}/{reservation_id}', 'store');
+                Route::post('reservation/{vehicle_route_destination_id}', 'store')->middleware('auth:sanctum');
                 Route::delete('reservation/{id}', 'destroy');
             });
 
@@ -53,9 +53,10 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
             });
             
             Route::controller(TicketController::class)->group(function () {
+                // Route to get all tickets
                 Route::get('tickets/{id}', 'show');
             });
-        });
+        // });
 
         Route::controller(AuthenticationController::class)->prefix('auth')->group(function () {
             Route::post('/register', 'register')->name('login');
