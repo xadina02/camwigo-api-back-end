@@ -39,8 +39,9 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
 
             Route::controller(VehicleRouteDestinationController::class)->group(function () {
                 Route::get('journey-dates/{route_schedule_id}', 'getAllScheduleJourneyDates');
-                Route::get('vehicle-journey', 'getAllDateScheduleJourneys');
+                Route::get('vehicle-journey/{route_schedule_id}/{journey_date}', 'getAllDateScheduleJourneys');
                 Route::get('vehicle-journey/{id}', 'getScheduleJourneyDetails');
+                Route::get('top-travels', 'getRecentTravelJourneys');
             });
 
             Route::controller(ReservationController::class)->group(function () {
