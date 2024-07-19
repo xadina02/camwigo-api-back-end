@@ -56,7 +56,7 @@ class PaymentController extends Controller
             $reservation->amount_paid += $amount;
             $reservation->save();
             
-            if($reservation->amount_paid < $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
+            if($reservation->amount_paid < ($reservation->vehicleRouteDestination->routeSchedule->routeDestination->price * $reservation->reservationPositions->count())) 
             {
                 $reservation->status = "partial";
                 $reservation->save();
@@ -64,7 +64,7 @@ class PaymentController extends Controller
                 return response()->json(['message' => 'Payment received. Complete your payment to get boarding pass!'], 200);
             }
 
-            if($reservation->amount_paid >= $reservation->vehicleRouteDestination->routeSchedule->routeDestination->price) 
+            if($reservation->amount_paid >= ($reservation->vehicleRouteDestination->routeSchedule->routeDestination->price * $reservation->reservationPositions->count())) 
             {
                 $reservation->status = "paid";
                 $reservation->save();

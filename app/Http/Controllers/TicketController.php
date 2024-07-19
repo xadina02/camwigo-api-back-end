@@ -12,16 +12,29 @@ use App\Helpers\ImageHelper;
 
 class TicketController extends Controller
 {
-    public function show($id) 
+    public function index(Request $request)
+    {
+        // $userId = auth('sanctum')->user()->id;
+
+        $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        $tickets = Ticket::with($relationships)->get();
+
+        if ($tickets) {
+            return TicketResource::collection($tickets);
+        }
+
+        return response()->json(['message' => 'Tickets not available'], 404);
+    }
+
+    public function show(Request $request, $id)
     {
         $reservation = Reservation::find($id);
 
-        if($reservation) 
-        {
-            $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        if ($reservation) {
+            $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
             $ticket = Ticket::with($relationships)->where('reservation_id', $id)->get();
 
-            if($ticket) {
+            if ($ticket) {
                 return new TicketResource($ticket);
             }
 

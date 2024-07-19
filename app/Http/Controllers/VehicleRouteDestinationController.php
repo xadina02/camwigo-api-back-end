@@ -41,7 +41,7 @@ class VehicleRouteDestinationController extends Controller
 
     public function getScheduleJourneyDetails(Request $request, $id) 
     {
-        $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination.route', 'reservations'];
+        $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination.route', 'reservations.reservationPositions'];
         $scheduleJourney = VehicleRouteDestination::with($relationships)->find($id);
 
         if(!$scheduleJourney)

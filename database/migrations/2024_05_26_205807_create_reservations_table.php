@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('vehicle_route_destination_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('position');
+            // $table->integer('position');
             $table->double('amount_paid')->default(0.00);
             $table->enum('status', ['completed', 'blocked', 'pending', 'paid', 'partial'])->default('pending');
             $table->timestamps();

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
 {
@@ -26,5 +27,10 @@ class Reservation extends Model
     public function vehicleRouteDestination(): BelongsTo
     {
         return $this->belongsTo(VehicleRouteDestination::class);
+    }
+
+    public function reservationPositions(): HasMany
+    {
+        return $this->hasMany(ReservationPosition::class);
     }
 }
