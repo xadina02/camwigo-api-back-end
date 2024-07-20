@@ -55,8 +55,8 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
 
         Route::controller(TicketController::class)->group(function () {
             // Route to get all tickets
-            Route::get('tickets/all', 'index');
-            Route::get('tickets/{id}', 'show');
+            Route::get('tickets/all', 'index')->middleware('auth:sanctum');
+            Route::get('tickets/{id}', 'show')->middleware('auth:sanctum');
         });
         // });
 

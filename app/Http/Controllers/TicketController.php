@@ -14,10 +14,13 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
-        // $userId = auth('sanctum')->user()->id;
+        $userId = auth('sanctum')->user()->id;
+        $user = User::find($userId);
 
-        $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
-        $tickets = Ticket::with($relationships)->get();
+        $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        $tickets = Ticket::whereHas('reservation', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->with($relationships)->orderBy('updated_at', 'desc')->get();
 
         if ($tickets) {
             return TicketResource::collection($tickets);
@@ -28,19 +31,16 @@ class TicketController extends Controller
 
     public function show(Request $request, $id)
     {
-        $reservation = Reservation::find($id);
+        $userId = auth('sanctum')->user()->id;
+        $user = User::find($userId);
 
-        if ($reservation) {
-            $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
-            $ticket = Ticket::with($relationships)->where('reservation_id', $id)->get();
+        $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route'];
+        $ticket = Ticket::with($relationships)->find($id);
 
-            if ($ticket) {
-                return new TicketResource($ticket);
-            }
-
-            return response()->json(['message' => 'Ticket not available'], 404);
+        if ($ticket) {
+            return new TicketResource($ticket);
         }
 
-        return response()->json(['message' => 'Reservation not found'], 404);
+        return response()->json(['message' => 'Ticket not available'], 404);
     }
 }

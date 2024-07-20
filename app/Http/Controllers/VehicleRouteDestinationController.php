@@ -12,47 +12,57 @@ use App\Http\Resources\VehicleRouteDestinationResource;
 
 class VehicleRouteDestinationController extends Controller
 {
-    public function getAllScheduleJourneyDates(Request $request, $id) 
+    public function getAllScheduleJourneyDates(Request $request, $id)
     {
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
-        $allScheduleDates = VehicleRouteDestination::where('route_schedule_id', $id)->whereBetween('journey_date', [$startOfMonth, $endOfMonth])->select('id', 'journey_date')->orderBy('journey_date', 'asc')->get()->unique('journey_date');
+        $currentDate = Carbon::now()->format('Y-m-d');
 
-        if($allScheduleDates->isEmpty())
-        {
+        // Fetch all schedule dates within the current month
+        $allScheduleDates = VehicleRouteDestination::where('route_schedule_id', $id)
+            ->whereBetween('journey_date', [$startOfMonth, $endOfMonth])
+            ->select('id', 'journey_date')
+            ->orderBy('journey_date', 'asc')
+            ->get()
+            ->unique('journey_date');
+
+        // Filter out dates before the current date
+        $filteredDates = $allScheduleDates->filter(function ($item) use ($currentDate) {
+            return $item->journey_date >= $currentDate;
+        });
+
+        if ($filteredDates->isEmpty()) {
             return response()->json(['message' => 'This journey-route has not been set for travel.'], 404);
         }
 
-        return VehicleRouteDestinationResource::collection($allScheduleDates);
+        return VehicleRouteDestinationResource::collection($filteredDates);
     }
 
-    public function getAllDateScheduleJourneys(Request $request, $routeScheduleId, $journeyDate) 
+    public function getAllDateScheduleJourneys(Request $request, $routeScheduleId, $journeyDate)
     {
         $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination.route'];
         $allScheduleJourneys = VehicleRouteDestination::with($relationships)->where('route_schedule_id', $routeScheduleId)->where('journey_date', 'LIKE', "%{$journeyDate}%")->orderBy('vehicle_route_destinations.available_seats', 'asc')->get();
 
-        if($allScheduleJourneys->isEmpty())
-        {
+        if ($allScheduleJourneys->isEmpty()) {
             return response()->json(['message' => 'Nothing found.'], 404);
         }
 
         return VehicleRouteDestinationResource::collection($allScheduleJourneys);
     }
 
-    public function getScheduleJourneyDetails(Request $request, $id) 
+    public function getScheduleJourneyDetails(Request $request, $id)
     {
         $relationships = ['vehicle.vehicleCategory', 'routeSchedule.routeDestination.route', 'reservations.reservationPositions'];
         $scheduleJourney = VehicleRouteDestination::with($relationships)->find($id);
 
-        if(!$scheduleJourney)
-        {
+        if (!$scheduleJourney) {
             return response()->json(['message' => 'Nothing found.'], 404);
         }
 
         return new VehicleRouteDestinationResource($scheduleJourney);
     }
 
-    public function getRecentTravelJourneys(Request $request) 
+    public function getRecentTravelJourneys(Request $request)
     {
         $today = Carbon::today()->format('Y-m-d');
 
@@ -61,10 +71,10 @@ class VehicleRouteDestinationController extends Controller
         $allScheduleJourneys = VehicleRouteDestination::with($relationships)
             ->whereDate('journey_date', $today)
             ->get()
-            ->filter(function($journey) {
+            ->filter(function ($journey) {
                 return $journey->vehicle->vehicleCategory->size > 0;
             })
-            ->map(function($journey) {
+            ->map(function ($journey) {
                 $journey->seat_ratio = $journey->available_seats / $journey->vehicle->vehicleCategory->size;
                 return $journey;
             })
