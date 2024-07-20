@@ -22,10 +22,9 @@ class TicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // To be removed
-            'amount' => ['required', 'numeric']
-            
-            // PAYMENT DETAILS
+            'amount' => ['required', 'numeric'],
+            'payment_method' => ['required', 'string'],
+            'account_number' => ['required', 'string']
         ];
     }
 }
