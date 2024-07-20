@@ -67,4 +67,5 @@ Route::prefix('{version}/{lang}')->middleware('identify_parameters')->group(func
             Route::post('/account/delete', 'destroy')->middleware('auth:sanctum');
         });
     });
+    require __DIR__ . '/validator.php';
 });

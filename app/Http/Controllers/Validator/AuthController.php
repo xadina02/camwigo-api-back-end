@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Validator;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,7 +28,8 @@ class AuthController extends Controller
             if ((Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], $request->remember))) 
             {
                 $token = $user->createToken($user->NIN ?? $user->email . 'AuthToken')->plainTextToken;
-                return new UserResource($user, $token, 'Bearer');
+                // return new UserResource($user, $token, 'Bearer');
+                return redirect()->route('homepage');
             }
         }
 
