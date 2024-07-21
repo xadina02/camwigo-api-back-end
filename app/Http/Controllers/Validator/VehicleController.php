@@ -9,7 +9,7 @@ use App\Http\Resources\VehicleResource;
 
 class VehicleController extends Controller
 {
-    public function index(Request $request, $scheduleId)
+    public function getAllScheduleVehicles(Request $request, $scheduleId)
     {
         $relationships = ['vehicleCategory'];
 
@@ -20,7 +20,7 @@ class VehicleController extends Controller
             ->get();
 
         if ($allVehicles->isEmpty()) {
-            return response()->json(['message' => 'No vehicles have been scheduled for at the given schedule.'], 404);
+            return response()->json(['message' => 'No vehicles have been scheduled for the given schedule.'], 404);
         }
 
         return VehicleResource::collection($allVehicles);

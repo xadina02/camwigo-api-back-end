@@ -7,6 +7,7 @@ use App\Http\Controllers\Validator\RouteScheduleController;
 use App\Http\Controllers\Validator\RouteDestinationController;
 use App\Http\Controllers\Validator\AuthController;
 use App\Http\Controllers\Validator\VehicleController;
+use App\Http\Controllers\Validator\ValidationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,8 @@ use App\Http\Controllers\Validator\VehicleController;
 |
 */
 
-    Route::prefix('validator')->group(function () {
-        // Route::middleware('auth:sanctum')->group(function () {
+Route::prefix('validator')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
         Route::controller(RouteController::class)->group(function () {
             Route::get('routes/all', 'getAllRoutes');
             Route::get('routes/search', 'searchRoutes');
@@ -37,8 +38,13 @@ use App\Http\Controllers\Validator\VehicleController;
             Route::get('schedule-vehicles/{route_schedule_id}', 'getAllScheduleVehicles');
         });
 
-        Route::controller(AuthController::class)->prefix('auth')->group(function () {
-            Route::post('/login', 'login');
-            Route::get('/logout', 'logout')->middleware('auth:sanctum');
+        Route::controller(ValidationController::class)->group(function () {
+            Route::post('validate', 'validateTicket');
         });
     });
+
+    Route::controller(AuthController::class)->prefix('auth')->group(function () {
+        Route::post('/login', 'login');
+        Route::get('/logout', 'logout')->middleware('auth:sanctum');
+    });
+});

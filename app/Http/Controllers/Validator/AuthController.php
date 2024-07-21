@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Validator;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function getLoginPage() 
-    {
-        // return view(''); - admin login page
-        return view('admin.auth.login');
-    }
-
     public function login(LoginRequest $request) 
     {
         $validated = $request->validated();
@@ -28,8 +22,7 @@ class AuthController extends Controller
             if ((Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], $request->remember))) 
             {
                 $token = $user->createToken($user->NIN ?? $user->email . 'AuthToken')->plainTextToken;
-                // return new UserResource($user, $token, 'Bearer');
-                return redirect()->route('homepage');
+                return new UserResource($user, $token, 'Bearer');
             }
         }
 
