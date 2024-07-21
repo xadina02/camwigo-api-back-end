@@ -25,6 +25,7 @@ class TicketValidationRequest extends FormRequest
             'route_schedule_id' => ['required', 'integer'],
             'vehicle_id' => ['required', 'integer'],
             'ticket_data' => ['required', 'string'],
+            'date' => ['required', 'date_format:Y-m-d'],
         ];
     }
 }
