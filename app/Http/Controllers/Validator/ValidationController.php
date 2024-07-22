@@ -20,6 +20,7 @@ class ValidationController extends Controller
 
         if ($journey) 
         {
+            dd(base64_decode($validatedData['ticket_data']));
             $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->first();
 
             if($reservation) 
