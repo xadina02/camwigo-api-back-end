@@ -112,12 +112,18 @@ class PaymentController extends Controller
      */
     public function generateQrCode(Ticket $ticket)
     {
+        $user = auth()->user();
+
         $centerImagePath = base_path('/storage/app/public/images/CamWiGo_logo.png');
 
         $agencyLogo = Setting::where('label', 'logo')->value('value');
         $centerImagePath = base_path('/storage/app/public' . $agencyLogo);
 
-        $encodedTicketData = base64_encode($ticket);
+        $ticketData = [];
+        $ticketData['ticket'] = $ticket;
+        $ticketData['user'] = $user;
+
+        $encodedTicketData = base64_encode(json_encode($ticketData));
 
         $qrCode = QrCode::encoding('UTF-8')
             ->margin(1)
