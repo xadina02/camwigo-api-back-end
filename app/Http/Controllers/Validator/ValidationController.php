@@ -20,12 +20,12 @@ class ValidationController extends Controller
         $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route', 'reservation.user'];
 
         // return new TicketResource(Ticket::with($relationships)->find(6));
-        // return response()->json(['message' => 'Tickets validation failed'], 404);
+        // return response()->json(['message' => 'Ticket validation failed'], 404);
 
         $journey = VehicleRouteDestination::where('vehicle_id', $validatedData['vehicle_id'])->where('route_schedule_id', $validatedData['route_schedule_id'])->where('journey_date', $validatedData['date'])->first();
 
         if ($journey) {
-            $ticketData = json_decode((base64_decode($validatedData['ticket_data'])));
+            $ticketData = (base64_decode($validatedData['ticket_data']));
 
             if (isset($ticketData['user_id'])) {
                 $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->where('user_id', $ticketData['user_id'])->first();
