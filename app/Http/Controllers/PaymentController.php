@@ -127,8 +127,8 @@ class PaymentController extends Controller
             'user_id' => $user->id,
         ];
 
-        // $encodedTicketData = base64_encode(serialize($ticketData));
-        $encodedTicketData = base64_encode($ticket);
+        $encodedTicketData = base64_encode(serialize($ticketData));
+        // $encodedTicketData = base64_encode($ticket);
 
         $qrCode = QrCode::encoding('UTF-8')
             ->margin(1)
