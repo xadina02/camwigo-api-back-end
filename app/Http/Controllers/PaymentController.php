@@ -119,16 +119,16 @@ class PaymentController extends Controller
         $agencyLogo = Setting::where('label', 'logo')->value('value');
         $centerImagePath = base_path('/storage/app/public' . $agencyLogo);
 
-        $ticketData = [
-            'ticket_id' => $ticket->id,
-            'reservation_id' => $ticket->reservation_id,
-            'validity' => $ticket->validity,
-            'status' => $ticket->status,
-            'user_id' => $user->id,
-        ];
+        // $ticketData = [
+        //     'ticket_id' => $ticket->id,
+        //     'reservation_id' => $ticket->reservation_id,
+        //     'validity' => $ticket->validity,
+        //     'status' => $ticket->status,
+        //     'user_id' => $user->id,
+        // ];
 
-        $encodedTicketData = base64_encode(serialize($ticketData));
-        // $encodedTicketData = base64_encode($ticket);
+        // $encodedTicketData = base64_encode(serialize($ticketData));
+        $encodedTicketData = base64_encode($ticket);
 
         $qrCode = QrCode::encoding('UTF-8')
             ->margin(1)

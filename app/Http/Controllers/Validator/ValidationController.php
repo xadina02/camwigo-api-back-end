@@ -22,13 +22,16 @@ class ValidationController extends Controller
         $journey = VehicleRouteDestination::where('vehicle_id', $validatedData['vehicle_id'])->where('route_schedule_id', $validatedData['route_schedule_id'])->where('journey_date', $validatedData['date'])->first();
 
         if ($journey) {
-            $ticketData = (base64_decode($validatedData['ticket_data']));
+            $ticketData = json_decode(base64_decode($validatedData['ticket_data']));
+            // return $ticketData->reservation_id;
 
-            if (isset($ticketData['user_id'])) {
-                $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->where('user_id', $ticketData['user_id'])->first();
+            // if (isset($ticketData['user_id'])) {
+                // $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->where('user_id', $ticketData['user_id'])->first();
+                $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->where('id', $ticketData->reservation_id)->first();
 
                 if ($reservation) {
-                    $retrievedTicket = Ticket::where('reservation_id', $reservation->id)->where('id', $ticketData['ticket_id'])->with($relationships)->first();
+                    // $retrievedTicket = Ticket::where('reservation_id', $reservation->id)->where('id', $ticketData['ticket_id'])->with($relationships)->first();
+                    $retrievedTicket = Ticket::where('reservation_id', $reservation->id)->with($relationships)->first();
 
                     if (!$retrievedTicket) {
                         return response()->json(['message' => 'Ticket not validated'], 404);
@@ -38,9 +41,9 @@ class ValidationController extends Controller
                 }
 
                 return response()->json(['message' => 'Reservation not found'], 404);
-            }
+            // }
 
-            return response()->json(['message' => 'User not identified'], 404);
+            // return response()->json(['message' => 'User not identified'], 404);
         }
 
         return response()->json(['message' => 'Trip not found'], 404);
