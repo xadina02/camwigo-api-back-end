@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\TicketValidationRequest;
 use App\Models\Ticket;
+use App\Models\User;
 use App\Http\Resources\TicketResource;
 use App\Models\VehicleRouteDestination;
 use App\Models\Reservation;
@@ -16,21 +17,35 @@ class ValidationController extends Controller
     public function validateTicket(TicketValidationRequest $request)
     {
         $validatedData = $request->validated();
-        // return new TicketResource(Ticket::first());
-        return json_encode(base64_decode($validatedData['ticket_data']));
+        $relationships = ['reservation.vehicleRouteDestination.vehicle.vehicleCategory', 'reservation.reservationPositions', 'reservation.vehicleRouteDestination.routeSchedule.routeDestination.route', 'reservation.user'];
+
+        // return new TicketResource(Ticket::with($relationships)->find(6));
+        // return response()->json(['message' => 'Tickets validation failed'], 404);
 
         $journey = VehicleRouteDestination::where('vehicle_id', $validatedData['vehicle_id'])->where('route_schedule_id', $validatedData['route_schedule_id'])->where('journey_date', $validatedData['date'])->first();
 
-        if ($journey) 
-        {
-            dd(base64_decode($validatedData['ticket_data']));
-            $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->first();
+        if ($journey) {
+            $ticketData = json_decode((base64_decode($validatedData['ticket_data'])));
 
-            if($reservation) 
-            {
-                $retrievedTicket = Ticket::where('reservation_id', $reservation->id)->first();
+            if (isset($ticketData['user_id'])) {
+                $reservation = Reservation::where('vehicle_route_destination_id', $journey->id)->where('user_id', $ticketData['user_id'])->first();
+
+                if ($reservation) {
+                    $retrievedTicket = Ticket::where('reservation_id', $reservation->id)->where('id', $ticketData['ticket_id'])->with($relationships)->first();
+
+                    if (!$retrievedTicket) {
+                        return response()->json(['message' => 'Ticket not validated'], 404);
+                    }
+
+                    return new TicketResource($retrievedTicket);
+                }
+
+                return response()->json(['message' => 'Reservation not found'], 404);
             }
+
+            return response()->json(['message' => 'User not identified'], 404);
         }
-        //$ticket = base64_decode($validatedData['ticket_data']')
+
+        return response()->json(['message' => 'Trip not found'], 404);
     }
 }
